@@ -1,49 +1,140 @@
-uses
-  IdSMTP, IdMessage, IdAttachmentFile, IdSSLOpenSSL, IdExplicitTLSClientServerBase,
-  Vcl.Dialogs, Vcl.StdCtrls, SysUtils, Classes;
-
-procedure TForm1.BtnAttachClick(Sender: TObject);
+1. ADD NEW ROW
+procedure Tcustomer_detailsfm.btnAddClick(Sender: TObject);
 begin
-  if OpenDialog1.Execute then
+  BankingDM.qryCustomer_Details.Append;  // Adds a new blank row
+  DBGrid1.SetFocus;
+end;
+
+2. INSERT+UPDATE
+procedure Tcustomer_detailsfm.btnSaveClick(Sender: TObject);
+begin
+  if BankingDM.qryCustomer_Details.State in [dsEdit, dsInsert] then
   begin
-    TIdAttachmentFile.Create(IdMessage1.MessageParts, OpenDialog1.FileName);
-    ShowMessage('File attached: ' + OpenDialog1.FileName);
+    BankingDM.qryCustomer_Details.Post;      // Save to dataset
+    BankingDM.qryCustomer_Details.UpdateBatch(arAll);  // Save to DB
+    ShowMessage('Customer added successfully.');
   end;
 end;
 
-procedure TForm1.BtnSendClick(Sender: TObject);
+4. INSERT+UPDATE SQL
+procedure Tcustomer_detailsfm.btnSaveClick(Sender: TObject);
 begin
-  // Setup SMTP settings for Gmail
-  IdSMTP1.Host := 'smtp.gmail.com';
-  IdSMTP1.Port := 587;
-  IdSMTP1.Username := Trim(EditFrom.Text);
-  IdSMTP1.Password := 'your_app_password_here'; // Replace with your actual Gmail App Password
+  with BankingDM.qryCustomer_Details do
+  begin
+    if State in [dsInsert, dsEdit] then
+    begin
+      if FieldByName('cust_id').IsNull or
+         FieldByName('fname').IsNull or
+         FieldByName('balance').IsNull then
+      begin
+        ShowMessage('Fill all required fields.');
+        Exit;
+      end;
 
-  // SSL/TLS setup
-  IdSMTP1.IOHandler := IdSSLIOHandler1;
-  IdSMTP1.UseTLS := utUseExplicitTLS;
+      with BankingDM.qryTemp do
+      begin
+        if State = dsInsert then
+        begin
+          SQL.Text :=
+            'INSERT INTO Customer_Details (cust_id, fname, lname, account_number, balance) ' +
+            'VALUES (:cust_id, :fname, :lname, :account_number, :balance)';
+        end
+        else if State = dsEdit then
+        begin
+          SQL.Text :=
+            'UPDATE Customer_Details SET fname = :fname, lname = :lname, ' +
+            'account_number = :account_number, balance = :balance ' +
+            'WHERE cust_id = :cust_id';
+        end;
 
-  // Prepare the email
-  IdMessage1.Clear;
-  IdMessage1.From.Address := Trim(EditFrom.Text);
-  IdMessage1.Subject := Trim(EditSubject.Text);
-  IdMessage1.Body.Text := MemoBody.Lines.Text;
+        Parameters.ParamByName('cust_id').Value := FieldByName('cust_id').AsInteger;
+        Parameters.ParamByName('fname').Value := FieldByName('fname').AsString;
+        Parameters.ParamByName('lname').Value := FieldByName('lname').AsString;
+        Parameters.ParamByName('account_number').Value := FieldByName('account_number').AsString;
+        Parameters.ParamByName('balance').Value := FieldByName('balance').AsFloat;
 
-  // Handle To, CC, BCC — support multiple addresses separated by , or ;
-  IdMessage1.Recipients.EMailAddresses :=
-    StringReplace(EditTo.Text, ';', ',', [rfReplaceAll]);
-  IdMessage1.CCList.EMailAddresses :=
-    StringReplace(EditCC.Text, ';', ',', [rfReplaceAll]);
-  IdMessage1.BCCList.EMailAddresses :=
-    StringReplace(EditBCC.Text, ';', ',', [rfReplaceAll]);
+        ExecSQL;
+      end;
 
-  try
-    IdSMTP1.Connect;
-    IdSMTP1.Send(IdMessage1);
-    IdSMTP1.Disconnect;
-    ShowMessage('✅ Email sent successfully!');
-  except
-    on E: Exception do
-      ShowMessage('❌ Failed to send email: ' + E.Message);
+      ShowMessage('Customer saved.');
+      Cancel;
+      Close;
+      Open;
+    end;
   end;
+end;
+
+
+5. DELETE BUTTON
+procedure Tcustomer_detailsfm.btnDeleteClick(Sender: TObject);
+begin
+  if not BankingDM.qryCustomer_Details.IsEmpty then
+    if MessageDlg('Delete this customer?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      BankingDM.qryCustomer_Details.Delete
+  else
+    ShowMessage('No customer selected.');
+end;
+
+6. DELETE BUTTON SQL BASED
+procedure Tcustomer_detailsfm.btnDeleteClick(Sender: TObject);
+begin
+  if not BankingDM.qryCustomer_Details.IsEmpty then
+    if MessageDlg('Delete this customer?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      BankingDM.qryTemp.SQL.Text := 'DELETE FROM Customer_Details WHERE cust_id = :id';
+      BankingDM.qryTemp.Parameters.ParamByName('id').Value :=
+        BankingDM.qryCustomer_Details.FieldByName('cust_id').AsInteger;
+      BankingDM.qryTemp.ExecSQL;
+
+      BankingDM.qryCustomer_Details.Close;
+      BankingDM.qryCustomer_Details.Open;
+
+      ShowMessage('Customer deleted.');
+    end
+  else
+    ShowMessage('No record selected.');
+end;
+
+7. CREDIT BUTTON
+procedure Tcustomer_detailsfm.btnCreditClick(Sender: TObject);
+var
+  amt: Double;
+begin
+  with BankingDM.qryCustomer_Details do
+  if not IsEmpty and TryStrToFloat(AmountEdit.Text, amt) and (amt > 0) then
+  begin
+    amt := FieldByName('balance').AsFloat + amt;
+    with BankingDM.qryTemp do
+    begin
+      SQL.Text := 'UPDATE Customer_Details SET balance = :b WHERE cust_id = :id';
+      Parameters.ParamByName('b').Value := amt;
+      Parameters.ParamByName('id').Value := FieldByName('cust_id').AsInteger;
+      ExecSQL;
+    end;
+    ShowMessage('Credited.');
+    Close; Open;
+  end
+  else ShowMessage('Select a customer and enter valid amount.');
+end;
+
+8. DEPOSIT BUTTON
+procedure Tcustomer_detailsfm.btnDepositClick(Sender: TObject);
+var amt, bal: Double;
+begin
+  with BankingDM.qryCustomer_Details do
+  if not IsEmpty and TryStrToFloat(AmountEdit.Text, amt) and (amt > 0) then
+  begin
+    bal := FieldByName('balance').AsFloat;
+    if amt > bal then Exit;
+    with BankingDM.qryTemp do
+    begin
+      SQL.Text := 'UPDATE Customer_Details SET balance = :b WHERE cust_id = :id';
+      Parameters.ParamByName('b').Value := bal - amt;
+      Parameters.ParamByName('id').Value := FieldByName('cust_id').AsInteger;
+      ExecSQL;
+    end;
+    ShowMessage('Deposited.');
+    Close; Open;
+  end
+  else ShowMessage('Select a customer and enter valid amount.');
 end;
