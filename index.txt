@@ -1,140 +1,172 @@
-1. ADD NEW ROW
-procedure Tcustomer_detailsfm.btnAddClick(Sender: TObject);
+1. UPDATE SQL
+procedure TForm2.btnUpdateClick(Sender: TObject);
 begin
-  BankingDM.qryCustomer_Details.Append;  // Adds a new blank row
-  DBGrid1.SetFocus;
-end;
-
-2. INSERT+UPDATE
-procedure Tcustomer_detailsfm.btnSaveClick(Sender: TObject);
-begin
-  if BankingDM.qryCustomer_Details.State in [dsEdit, dsInsert] then
+  if EditCustomerID.Text = '' then
   begin
-    BankingDM.qryCustomer_Details.Post;      // Save to dataset
-    BankingDM.qryCustomer_Details.UpdateBatch(arAll);  // Save to DB
-    ShowMessage('Customer added successfully.');
+    ShowMessage('Customer ID is required to update.');
+    Exit;
+  end;
+
+  try
+    qryEdit.SQL.Clear;
+
+    // First UPDATE: Customer_Details
+    qryEdit.SQL.Add('UPDATE Customer_Details SET ' +
+      'Fname = ' + QuotedStr(EditFName.Text) + ', ' +
+      'Lname = ' + QuotedStr(EditLName.Text) + ', ' +
+      'Account_no = ' + QuotedStr(EditAccountNo.Text) +
+      ' WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) + ';');
+
+    // Execute first update
+    qryEdit.ExecSQL;
+
+    // Second UPDATE: Account_Details
+    qryEdit.SQL.Clear;
+    qryEdit.SQL.Add('UPDATE Account_Details SET ' +
+      'Account_Type = ' + QuotedStr(EditAccountType.Text) + ', ' +
+      'DateofCreation = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DatePickerCreation.Date)) + ', ' +
+      'MinBalance = ' + EditMinBalance.Text + ', ' +
+      'Balance = ' + EditBalance.Text +
+      ' WHERE Account_no = ' + QuotedStr(EditAccountNo.Text) + ';');
+
+    qryEdit.ExecSQL;
+
+    ShowMessage('Record updated successfully.');
+    qryView.Close;
+    qryView.Open;
+    
+  except
+    on E: Exception do
+      ShowMessage('Update Error: ' + E.Message);
   end;
 end;
 
-3. INSERT+UPDATE SQL
-procedure Tcustomer_detailsfm.btnSaveClick(Sender: TObject);
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+2. DELETE BUTTON
+procedure TForm2.btnDeleteClick(Sender: TObject);
+var
+  AccountNo: string;
 begin
-  with BankingDM.qryCustomer_Details do
+  if EditCustomerID.Text = '' then
   begin
-    if State in [dsInsert, dsEdit] then
+    ShowMessage('Please enter a Customer ID to delete.');
+    Exit;
+  end;
+
+  try
+    // Step 1: Find associated Account_no from Customer_Details
+    qryEdit.SQL.Clear;
+    qryEdit.SQL.Text := 'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' +
+                        QuotedStr(EditCustomerID.Text);
+    qryEdit.Open;
+
+    if qryEdit.IsEmpty then
     begin
-      if FieldByName('cust_id').IsNull or
-         FieldByName('fname').IsNull or
-         FieldByName('balance').IsNull then
-      begin
-        ShowMessage('Fill all required fields.');
-        Exit;
-      end;
-
-      with BankingDM.qryTemp do
-      begin
-        if State = dsInsert then
-        begin
-          SQL.Text :=
-            'INSERT INTO Customer_Details (cust_id, fname, lname, account_number, balance) ' +
-            'VALUES (:cust_id, :fname, :lname, :account_number, :balance)';
-        end
-        else if State = dsEdit then
-        begin
-          SQL.Text :=
-            'UPDATE Customer_Details SET fname = :fname, lname = :lname, ' +
-            'account_number = :account_number, balance = :balance ' +
-            'WHERE cust_id = :cust_id';
-        end;
-
-        Parameters.ParamByName('cust_id').Value := FieldByName('cust_id').AsInteger;
-        Parameters.ParamByName('fname').Value := FieldByName('fname').AsString;
-        Parameters.ParamByName('lname').Value := FieldByName('lname').AsString;
-        Parameters.ParamByName('account_number').Value := FieldByName('account_number').AsString;
-        Parameters.ParamByName('balance').Value := FieldByName('balance').AsFloat;
-
-        ExecSQL;
-      end;
-
-      ShowMessage('Customer saved.');
-      Cancel;
-      Close;
-      Open;
+      ShowMessage('No customer found with the given ID.');
+      Exit;
     end;
+
+    AccountNo := qryEdit.FieldByName('Account_no').AsString;
+    qryEdit.Close;
+
+    // Step 2: Delete from Customer_Details
+    qryEdit.SQL.Clear;
+    qryEdit.SQL.Text := 'DELETE FROM Customer_Details WHERE Customer_id = ' +
+                        QuotedStr(EditCustomerID.Text);
+    qryEdit.ExecSQL;
+
+    // Step 3: Delete from Account_Details
+    qryEdit.SQL.Clear;
+    qryEdit.SQL.Text := 'DELETE FROM Account_Details WHERE Account_no = ' +
+                        QuotedStr(AccountNo);
+    qryEdit.ExecSQL;
+
+    ShowMessage('Customer and account deleted successfully.');
+    qryView.Close;
+    qryView.Open;
+
+  except
+    on E: Exception do
+      ShowMessage('Deletion failed: ' + E.Message);
   end;
 end;
 
-
-4. DELETE BUTTON
-procedure Tcustomer_detailsfm.btnDeleteClick(Sender: TObject);
-begin
-  if not BankingDM.qryCustomer_Details.IsEmpty then
-    if MessageDlg('Delete this customer?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-      BankingDM.qryCustomer_Details.Delete
-  else
-    ShowMessage('No customer selected.');
-end;
-
-5. DELETE BUTTON SQL BASED
-procedure Tcustomer_detailsfm.btnDeleteClick(Sender: TObject);
-begin
-  if not BankingDM.qryCustomer_Details.IsEmpty then
-    if MessageDlg('Delete this customer?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
-    begin
-      BankingDM.qryTemp.SQL.Text := 'DELETE FROM Customer_Details WHERE cust_id = :id';
-      BankingDM.qryTemp.Parameters.ParamByName('id').Value :=
-        BankingDM.qryCustomer_Details.FieldByName('cust_id').AsInteger;
-      BankingDM.qryTemp.ExecSQL;
-
-      BankingDM.qryCustomer_Details.Close;
-      BankingDM.qryCustomer_Details.Open;
-
-      ShowMessage('Customer deleted.');
-    end
-  else
-    ShowMessage('No record selected.');
-end;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 6. CREDIT BUTTON
-procedure Tcustomer_detailsfm.btnCreditClick(Sender: TObject);
-var
-  amt: Double;
+procedure TForm2.btnCreditClick(Sender: TObject);
 begin
-  with BankingDM.qryCustomer_Details do
-  if not IsEmpty and TryStrToFloat(AmountEdit.Text, amt) and (amt > 0) then
+  if (EditCustomerID.Text = '') or (EditAmount.Text = '') then
   begin
-    amt := FieldByName('balance').AsFloat + amt;
-    with BankingDM.qryTemp do
-    begin
-      SQL.Text := 'UPDATE Customer_Details SET balance = :b WHERE cust_id = :id';
-      Parameters.ParamByName('b').Value := amt;
-      Parameters.ParamByName('id').Value := FieldByName('cust_id').AsInteger;
-      ExecSQL;
-    end;
-    ShowMessage('Credited.');
-    Close; Open;
-  end
-  else ShowMessage('Select a customer and enter valid amount.');
+    ShowMessage('Enter Customer ID and Amount.');
+    Exit;
+  end;
+
+  if not TryStrToFloat(EditAmount.Text, var CreditAmt) or (CreditAmt <= 0) then
+  begin
+    ShowMessage('Invalid amount.');
+    Exit;
+  end;
+
+  try
+    qryTxn.SQL.Clear;
+    qryTxn.SQL.Text := 
+      'UPDATE Account_Details SET Balance = Balance + ' + EditAmount.Text +
+      ' WHERE Account_no = (' +
+        'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) +
+      ')';
+    qryTxn.ExecSQL;
+
+    ShowMessage('Amount credited successfully.');
+    qryView.Close;
+    qryView.Open;
+
+  except
+    on E: Exception do
+      ShowMessage('Credit failed: ' + E.Message);
+  end;
 end;
 
+---------------------------------------------------------------------------------------------------------------------------------------
+
 7. DEPOSIT BUTTON
-procedure Tcustomer_detailsfm.btnDepositClick(Sender: TObject);
-var amt, bal: Double;
+procedure TForm2.btnDebitClick(Sender: TObject);
 begin
-  with BankingDM.qryCustomer_Details do
-  if not IsEmpty and TryStrToFloat(AmountEdit.Text, amt) and (amt > 0) then
+  if (EditCustomerID.Text = '') or (EditAmount.Text = '') then
   begin
-    bal := FieldByName('balance').AsFloat;
-    if amt > bal then Exit;
-    with BankingDM.qryTemp do
+    ShowMessage('Enter Customer ID and Amount.');
+    Exit;
+  end;
+
+  if not TryStrToFloat(EditAmount.Text, var DebitAmt) or (DebitAmt <= 0) then
+  begin
+    ShowMessage('Invalid amount.');
+    Exit;
+  end;
+
+  try
+    // Attempt debit only if balance - amount >= min balance
+    qryTxn.SQL.Clear;
+    qryTxn.SQL.Text :=
+      'UPDATE Account_Details SET Balance = Balance - ' + EditAmount.Text +
+      ' WHERE Account_no = (' +
+        'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) +
+      ') AND (Balance - ' + EditAmount.Text + ') >= MinBalance';
+
+    qryTxn.ExecSQL;
+
+    if qryTxn.RowsAffected = 0 then
+      ShowMessage('Debit failed: Not enough balance to maintain minimum.')
+    else
     begin
-      SQL.Text := 'UPDATE Customer_Details SET balance = :b WHERE cust_id = :id';
-      Parameters.ParamByName('b').Value := bal - amt;
-      Parameters.ParamByName('id').Value := FieldByName('cust_id').AsInteger;
-      ExecSQL;
+      ShowMessage('Amount debited successfully.');
+      qryView.Close;
+      qryView.Open;
     end;
-    ShowMessage('Deposited.');
-    Close; Open;
-  end
-  else ShowMessage('Select a customer and enter valid amount.');
+
+  except
+    on E: Exception do
+      ShowMessage('Debit error: ' + E.Message);
+  end;
 end;
