@@ -1,3 +1,38 @@
+procedure TForm2.ButtonCreditClick(Sender: TObject);
+var
+  CID, AccNo: string;
+  Amt, Bal: Double;
+begin
+  CID := QuotedStr(EditCustomerID.Text);
+  Amt := StrToFloat(EditAmount.Text);
+
+  // Get Account_no
+  ADOQuery3.Close;
+  ADOQuery3.SQL.Text := 'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' + CID;
+  ADOQuery3.Open;
+  if ADOQuery3.IsEmpty then Exit;
+
+  AccNo := QuotedStr(ADOQuery3.FieldByName('Account_no').AsString);
+
+  // Get current balance
+  ADOQuery3.Close;
+  ADOQuery3.SQL.Text := 'SELECT Balance FROM Account_Details WHERE Account_no = ' + AccNo;
+  ADOQuery3.Open;
+  Bal := ADOQuery3.FieldByName('Balance').AsFloat + Amt;
+
+  // Update balance
+  ADOQuery3.Close;
+  ADOQuery3.SQL.Text := 'UPDATE Account_Details SET Balance = ' + FloatToStr(Bal) +
+                        ' WHERE Account_no = ' + AccNo;
+  ADOQuery3.ExecSQL;
+
+  ShowMessage('Credited. New Balance: ' + FloatToStr(Bal));
+end;
+
+
+----------------------------------------------
+
+
 I have a database "bankdetails" with 
 1. Customer_Details(Customer_id Primary Key, Fname, Lname,....Account_no Foreign Key......)
 2. Account_Details(Account_no Primary Key, Account_Type Foreign Key, DateofCreation DATE, MinBalance, Balance)
