@@ -1,172 +1,221 @@
-1. UPDATE SQL
-procedure TForm2.btnUpdateClick(Sender: TObject);
-begin
-  if EditCustomerID.Text = '' then
-  begin
-    ShowMessage('Customer ID is required to update.');
-    Exit;
+unit LibraryPublicationfm;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TBook = class
+  public
+    Title: string;
+    Author: string;
+    Price: Double;
+    PublicationDate: TDateTime;
+    PageCount: Integer;
   end;
 
-  try
-    qryEdit.SQL.Clear;
-
-    // First UPDATE: Customer_Details
-    qryEdit.SQL.Add('UPDATE Customer_Details SET ' +
-      'Fname = ' + QuotedStr(EditFName.Text) + ', ' +
-      'Lname = ' + QuotedStr(EditLName.Text) + ', ' +
-      'Account_no = ' + QuotedStr(EditAccountNo.Text) +
-      ' WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) + ';');
-
-    // Execute first update
-    qryEdit.ExecSQL;
-
-    // Second UPDATE: Account_Details
-    qryEdit.SQL.Clear;
-    qryEdit.SQL.Add('UPDATE Account_Details SET ' +
-      'Account_Type = ' + QuotedStr(EditAccountType.Text) + ', ' +
-      'DateofCreation = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DatePickerCreation.Date)) + ', ' +
-      'MinBalance = ' + EditMinBalance.Text + ', ' +
-      'Balance = ' + EditBalance.Text +
-      ' WHERE Account_no = ' + QuotedStr(EditAccountNo.Text) + ';');
-
-    qryEdit.ExecSQL;
-
-    ShowMessage('Record updated successfully.');
-    qryView.Close;
-    qryView.Open;
-    
-  except
-    on E: Exception do
-      ShowMessage('Update Error: ' + E.Message);
+  TFictionBook = class(TBook)
+  public
+    HasPlotTwist: Boolean;
   end;
-end;
 
------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  TScienceBook = class(TBook)
+  public
+    SubjectArea: string;
+  end;
 
-2. DELETE BUTTON
-procedure TForm2.btnDeleteClick(Sender: TObject);
+  THorrorBook = class(TBook)
+  public
+    FearElement: string;
+  end;
+
+  TLibraryPub = class(TForm)
+    PanelLibrary: TPanel;
+    LblLibraryPublicationHeader: TLabel;
+    LblTitle: TLabel;
+    EditTitle: TEdit;
+    LblAuthor: TLabel;
+    EditAuthor: TEdit;
+    LabelPrice: TLabel;
+    EditPrice: TEdit;
+    LblGenre: TLabel;
+    ComboBoxGenre: TComboBox;
+    AddEntry: TButton;
+    ShowEntry: TButton;
+    LblDOP: TLabel;
+    DateTimePicker1: TDateTimePicker;
+    CheckBoxHasPlotTwist: TCheckBox;
+    EditSubjectArea: TEdit;
+    ComboBoxFearElement: TComboBox;
+    LblSubArea: TLabel;
+    LblFearElement: TLabel;
+    LblNoOfPgs: TLabel;
+    EditNoOfPags: TEdit;
+    procedure AddEntryClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ShowEntryClick(Sender: TObject);
+    procedure ComboBoxGenreChange(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
 var
-  AccountNo: string;
+  LibraryPub: TLibraryPub;
+  BookTextList: TStringList;
+
+implementation
+
+{$R *.dfm}
+
+// OnClick of "Add Entry" add the entry to class.
+procedure TLibraryPub.AddEntryClick(Sender: TObject);
+var
+  L_NewBook: TBook;
+  L_Genre, BookEntry: string;
 begin
-  if EditCustomerID.Text = '' then
+  L_Genre := ComboBoxGenre.Text;
+
+  if L_Genre = 'Fiction' then
   begin
-    ShowMessage('Please enter a Customer ID to delete.');
-    Exit;
-  end;
-
-  try
-    // Step 1: Find associated Account_no from Customer_Details
-    qryEdit.SQL.Clear;
-    qryEdit.SQL.Text := 'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' +
-                        QuotedStr(EditCustomerID.Text);
-    qryEdit.Open;
-
-    if qryEdit.IsEmpty then
+    L_NewBook := TFictionBook.Create;
+    with TFictionBook(L_NewBook) do
     begin
-      ShowMessage('No customer found with the given ID.');
-      Exit;
+      Title := EditTitle.Text;
+      Author := EditAuthor.Text;
+      Price := StrToFloat(EditPrice.Text);
+      PublicationDate := DateTimePicker1.Date;
+      PageCount := StrToInt(EditNoOfPags.Text);
+      HasPlotTwist := CheckBoxHasPlotTwist.Checked;
+
+      BookEntry := 'Title=' + Title +
+        '; Author=' + Author +
+        '; Price=' + FloatToStr(Price) +
+        '; Date=' + DateToStr(PublicationDate) +
+        '; Pages=' + IntToStr(PageCount) +
+        '; Genre=' + L_Genre +
+        '; PlotTwist=' + BoolToStr(HasPlotTwist, True);
+      BookTextList.Add(BookEntry);
+    end;
+  end
+  else if L_Genre = 'Science' then
+  begin
+    L_NewBook := TScienceBook.Create;
+    with TScienceBook(L_NewBook) do
+    begin
+      Title := EditTitle.Text;
+      Author := EditAuthor.Text;
+      Price := StrToFloat(EditPrice.Text);
+      PublicationDate := DateTimePicker1.Date;
+      PageCount := StrToInt(EditNoOfPags.Text);
+      SubjectArea := EditSubjectArea.Text;
+
+      BookEntry := 'Title=' + Title +
+        '; Author=' + Author +
+        '; Price=' + FloatToStr(Price) +
+        '; Date=' + DateToStr(PublicationDate) +
+        '; Pages=' + IntToStr(PageCount) +
+        '; Genre=' + L_Genre +
+        '; SubjectArea=' + SubjectArea;
+      BookTextList.Add(BookEntry);
     end;
 
-    AccountNo := qryEdit.FieldByName('Account_no').AsString;
-    qryEdit.Close;
-
-    // Step 2: Delete from Customer_Details
-    qryEdit.SQL.Clear;
-    qryEdit.SQL.Text := 'DELETE FROM Customer_Details WHERE Customer_id = ' +
-                        QuotedStr(EditCustomerID.Text);
-    qryEdit.ExecSQL;
-
-    // Step 3: Delete from Account_Details
-    qryEdit.SQL.Clear;
-    qryEdit.SQL.Text := 'DELETE FROM Account_Details WHERE Account_no = ' +
-                        QuotedStr(AccountNo);
-    qryEdit.ExecSQL;
-
-    ShowMessage('Customer and account deleted successfully.');
-    qryView.Close;
-    qryView.Open;
-
-  except
-    on E: Exception do
-      ShowMessage('Deletion failed: ' + E.Message);
-  end;
-end;
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-6. CREDIT BUTTON
-procedure TForm2.btnCreditClick(Sender: TObject);
-begin
-  if (EditCustomerID.Text = '') or (EditAmount.Text = '') then
+  end
+  else if L_Genre = 'Horror' then
   begin
-    ShowMessage('Enter Customer ID and Amount.');
-    Exit;
-  end;
-
-  if not TryStrToFloat(EditAmount.Text, var CreditAmt) or (CreditAmt <= 0) then
-  begin
-    ShowMessage('Invalid amount.');
-    Exit;
-  end;
-
-  try
-    qryTxn.SQL.Clear;
-    qryTxn.SQL.Text := 
-      'UPDATE Account_Details SET Balance = Balance + ' + EditAmount.Text +
-      ' WHERE Account_no = (' +
-        'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) +
-      ')';
-    qryTxn.ExecSQL;
-
-    ShowMessage('Amount credited successfully.');
-    qryView.Close;
-    qryView.Open;
-
-  except
-    on E: Exception do
-      ShowMessage('Credit failed: ' + E.Message);
-  end;
-end;
-
----------------------------------------------------------------------------------------------------------------------------------------
-
-7. DEPOSIT BUTTON
-procedure TForm2.btnDebitClick(Sender: TObject);
-begin
-  if (EditCustomerID.Text = '') or (EditAmount.Text = '') then
-  begin
-    ShowMessage('Enter Customer ID and Amount.');
-    Exit;
-  end;
-
-  if not TryStrToFloat(EditAmount.Text, var DebitAmt) or (DebitAmt <= 0) then
-  begin
-    ShowMessage('Invalid amount.');
-    Exit;
-  end;
-
-  try
-    // Attempt debit only if balance - amount >= min balance
-    qryTxn.SQL.Clear;
-    qryTxn.SQL.Text :=
-      'UPDATE Account_Details SET Balance = Balance - ' + EditAmount.Text +
-      ' WHERE Account_no = (' +
-        'SELECT Account_no FROM Customer_Details WHERE Customer_id = ' + QuotedStr(EditCustomerID.Text) +
-      ') AND (Balance - ' + EditAmount.Text + ') >= MinBalance';
-
-    qryTxn.ExecSQL;
-
-    if qryTxn.RowsAffected = 0 then
-      ShowMessage('Debit failed: Not enough balance to maintain minimum.')
-    else
+    L_NewBook := THorrorBook.Create;
+    with THorrorBook(L_NewBook) do
     begin
-      ShowMessage('Amount debited successfully.');
-      qryView.Close;
-      qryView.Open;
-    end;
+      Title := EditTitle.Text;
+      Author := EditAuthor.Text;
+      Price := StrToFloat(EditPrice.Text);
+      PublicationDate := DateTimePicker1.Date;
+      PageCount := StrToInt(EditNoOfPags.Text);
+      FearElement := ComboBoxFearElement.Text;
 
-  except
-    on E: Exception do
-      ShowMessage('Debit error: ' + E.Message);
+      BookEntry := 'Title=' + Title +
+        '; Author=' + Author +
+        '; Price=' + FloatToStr(Price) +
+        '; Date=' + DateToStr(PublicationDate) +
+        '; Pages=' + IntToStr(PageCount) +
+        '; Genre=' + L_Genre +
+        '; FearElement=' + FearElement;
+      BookTextList.Add(BookEntry);
+    end;
+  end;
+  ShowMessage('Book entry added successfully!');
+end;
+
+// OnCreate of Form:
+procedure TLibraryPub.FormCreate(Sender: TObject);
+begin
+    if BookTextList = nil then
+      BookTextList := TStringList.Create;
+end;
+
+
+// OnClick of "Show Entries" display all the book details.
+ procedure TLibraryPub.ShowEntryClick(Sender: TObject);
+var
+  DisplayForm: TForm;
+  MemoDisplay: TMemo;
+  i: Integer;
+begin
+  DisplayForm := TForm.Create(Self);
+  try
+    DisplayForm.Caption := 'Book Entries';
+    DisplayForm.Width := 600;
+    DisplayForm.Height := 400;
+    DisplayForm.Position := poScreenCenter;
+
+    MemoDisplay := TMemo.Create(DisplayForm);
+    MemoDisplay.Parent := DisplayForm;
+    MemoDisplay.Align := alClient;
+    MemoDisplay.ScrollBars := ssVertical;
+    MemoDisplay.ReadOnly := True;
+    MemoDisplay.Lines.Add('--- Book Entries ---');
+
+    for i := 0 to BookTextList.Count - 1 do
+      MemoDisplay.Lines.Add(BookTextList[i]);
+
+    DisplayForm.ShowModal;
+  finally
+    DisplayForm.Free;
   end;
 end;
+
+// OnChange of "Combo Box":
+procedure TLibraryPub.ComboBoxGenreChange(Sender: TObject);
+begin
+  if ComboBoxGenre.Text = 'Fiction' then
+  begin
+    CheckBoxHasPlotTwist.Enabled := True;
+    EditSubjectArea.Enabled := False;
+    ComboBoxFearElement.Enabled := False;
+  end
+  else if ComboBoxGenre.Text = 'Science' then
+  begin
+    CheckBoxHasPlotTwist.Enabled := False;
+    EditSubjectArea.Enabled := True;
+    ComboBoxFearElement.Enabled := False;
+  end
+  else if ComboBoxGenre.Text = 'Horror' then
+  begin
+    CheckBoxHasPlotTwist.Enabled := False;
+    EditSubjectArea.Enabled := False;
+    ComboBoxFearElement.Enabled := True;
+  end
+  else
+  begin
+    CheckBoxHasPlotTwist.Enabled := False;
+    EditSubjectArea.Enabled := False;
+    ComboBoxFearElement.Enabled := False;
+  end;
+end;
+
+
+
+end.
