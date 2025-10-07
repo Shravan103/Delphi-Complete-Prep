@@ -1,0 +1,418 @@
+unit frmAdmin;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls, System.UITypes,
+  Vcl.ComCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.CheckLst, Vcl.Imaging.jpeg, DMMain,
+  Data.DB;
+
+type
+  TAdminForm = class(TForm)
+    PanelAdmin: TPanel;
+    PanelHeaderAdmin: TPanel;
+    LabelAssess360A: TLabel;
+    PanelAdminSidebar: TPanel;
+    BtnAdminCreateProj: TButton;
+    BtnAdminProjAssign: TButton;
+    BtnUserManage: TButton;
+    BtnAdminAboutMe: TButton;
+    PanelCreateNewProject: TPanel;
+    DBGridCP: TDBGrid;
+    PanelHeaderAdminCreateNewProj: TPanel;
+    EditProjectTitleCP: TEdit;
+    BtnCreateNewProjectCP: TButton;
+    MemoProjDescCP: TMemo;
+    LblAdminProjectTitleCP: TLabel;
+    LblAdminProjectDescCP: TLabel;
+    LblAdminProjDeadlineCP: TLabel;
+    DateTimePickerDeadlineCP: TDateTimePicker;
+    PanelProjectAssignment: TPanel;
+    PanelHeaderAdminProjAssignment: TPanel;
+    DBGridPA: TDBGrid;
+    ComboBoxProjManagerPA: TComboBox;
+    CheckListBoxEmployeesPA: TCheckListBox;
+    LblProjectIdPA: TLabel;
+    LblProjectManagerPA: TLabel;
+    LblProjectEmployeePA: TLabel;
+    BtnSubmitPA: TButton;
+    PanelUserManagement: TPanel;
+    PanelUserManagementHeader: TPanel;
+    DBGridUM: TDBGrid;
+    EditUseridUM: TEdit;
+    EditEmailUM: TEdit;
+    EditNameUM: TEdit;
+    ComboBoxRoleUM: TComboBox;
+    EditPasswordUM: TEdit;
+    ComboBoxSubroleUM: TComboBox;
+    DateTimePickerJoiningDateUM: TDateTimePicker;
+    BtnRemoveUser: TButton;
+    BtnAddUser: TButton;
+    BtnUpdateUser: TButton;
+    LblUseridUM: TLabel;
+    LblEmailUM: TLabel;
+    LblRoleUM: TLabel;
+    LblSubroleUM: TLabel;
+    LblNameUM: TLabel;
+    LblPasswordUM: TLabel;
+    LblJoiningDateUM: TLabel;
+    PanelAdminAboutMe: TPanel;
+    PanelHeaderAdminAboutMe: TPanel;
+    ImgAdminAboutMe: TImage;
+    EditNameAdminAM: TEdit;
+    EditEmailAdminAM: TEdit;
+    EditRoleAdminAM: TEdit;
+    EditSubroleAdminAM: TEdit;
+    LblNameAdminAM: TLabel;
+    LblEmailAdminAM: TLabel;
+    LblRoleAdminAM: TLabel;
+    LblSubroleAdminAM: TLabel;
+    ComboBoxProjectPA: TComboBox;
+    procedure BtnAdminCreateProjClick(Sender: TObject);
+    procedure BtnAdminProjAssignClick(Sender: TObject);
+    procedure BtnUserManageClick(Sender: TObject);
+    procedure BtnAdminAboutMeClick(Sender: TObject);
+    procedure BtnAddUserClick(Sender: TObject);
+    procedure DBGridUMCellClick(Column: TColumn);
+    procedure BtnRemoveUserClick(Sender: TObject);
+    procedure BtnUpdateUserClick(Sender: TObject);
+    procedure BtnCreateNewProjectCPClick(Sender: TObject);
+    procedure DBGridCPCellClick(Column: TColumn);
+    procedure BtnSubmitPAClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  AdminForm: TAdminForm;
+
+implementation
+
+{$R *.dfm}
+
+//------------------------------------------------------------------------------
+
+// INSERT USER:
+procedure TAdminForm.BtnAddUserClick(Sender: TObject);
+var
+  roleText, subroleSQL: string;
+begin
+  case ComboBoxRoleUM.ItemIndex of
+    0: roleText := 'Admin';
+    1: roleText := 'Manager';
+    2: roleText := 'Employee';
+  else
+    roleText := 'Employee';
+  end;
+
+  if roleText = 'Employee' then
+    subroleSQL := IntToStr(ComboBoxSubroleUM.ItemIndex + 1)
+  else
+    subroleSQL := 'NULL'; // Admin and Manager.
+
+  with DMMain.DataModule1.qryAdminInsertUsers do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'INSERT INTO users (name, email, password_hash, role, created_at, subrole_id) VALUES (' +
+      QuotedStr(EditNameUM.Text) + ', ' +
+      QuotedStr(EditEmailUM.Text) + ', ' +
+      QuotedStr(EditPasswordUM.Text) + ', ' +
+      QuotedStr(roleText) + ', ' +
+      QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePickerJoiningDateUM.Date)) + ', ' +
+      subroleSQL + ')';
+
+    ExecSQL;
+    MessageDlg('User added successfully!', mtConfirmation, [mbOK], 0);
+  end;
+
+  DMMain.DataModule1.qryDBGridUM.Close;
+  DMMain.DataModule1.qryDBGridUM.Open;
+end;
+
+//------------------------------------------------------------------------------
+
+// Z-INDEX SHIFTIING OF PANELS:
+procedure TAdminForm.BtnAdminAboutMeClick(Sender: TObject);
+begin
+  PanelCreateNewProject.SendToBack;
+  PanelProjectAssignment.SendToBack;
+  PanelUserManagement.SendToBack;
+  PanelAdminAboutMe.BringToFront;
+end;
+
+procedure TAdminForm.BtnAdminCreateProjClick(Sender: TObject);
+begin
+  PanelCreateNewProject.BringToFront;
+  PanelProjectAssignment.SendToBack;
+  PanelUserManagement.SendToBack;
+  PanelAdminAboutMe.SendToBack;
+end;
+
+procedure TAdminForm.BtnAdminProjAssignClick(Sender: TObject);
+begin
+  PanelCreateNewProject.SendToBack;
+  PanelProjectAssignment.BringToFront;
+  PanelUserManagement.SendToBack;
+  PanelAdminAboutMe.SendToBack;
+end;
+//------------------------------------------------------------------------------
+
+// CREATE PROJECT:
+procedure TAdminForm.BtnCreateNewProjectCPClick(Sender: TObject);
+begin
+  if EditProjectTitleCP.Text = '' then
+  begin
+    MessageDlg('Please Enter Project Title.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  if MemoProjDescCP.Lines.Text = '' then
+  begin
+    MessageDlg('Please Enter Project Description.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  with DMMain.DataModule1.qryCreateProject do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'INSERT INTO projects (title, description, deadline) VALUES (' +
+      QuotedStr(EditProjectTitleCP.Text) + ', ' +
+      QuotedStr(MemoProjDescCP.Lines.Text) + ', ' +
+      QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePickerDeadlineCP.Date)) + ')';
+    ExecSQL;
+  end;
+
+  MessageDlg('Project created successfully!', mtInformation, [mbOK], 0);
+
+  // Refresh grid data
+  DMMain.DataModule1.qryDBGridCP.Close;
+  DMMain.DataModule1.qryDBGridCP.Open;
+end;
+
+
+
+//------------------------------------------------------------------------------
+
+procedure TAdminForm.BtnUserManageClick(Sender: TObject);
+begin
+  PanelCreateNewProject.SendToBack;
+  PanelProjectAssignment.SendToBack;
+  PanelUserManagement.BringToFront;
+  PanelAdminAboutMe.SendToBack;
+end;
+
+//------------------------------------------------------------------------------
+
+// UPDATE USER:
+procedure TAdminForm.BtnUpdateUserClick(Sender: TObject);
+var
+  roleText, subroleSQL, userID: string;
+begin
+  userID := EditUseridUM.Text;
+
+  if userID = '' then
+  begin
+    MessageDlg('Please select a user to update.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  // Determine role
+  case ComboBoxRoleUM.ItemIndex of
+    0: roleText := 'Admin';
+    1: roleText := 'Manager';
+    2: roleText := 'Employee';
+  else
+    roleText := 'Employee';
+  end;
+
+  // Determine subrole_id value
+  if roleText = 'Employee' then
+    subroleSQL := IntToStr(ComboBoxSubroleUM.ItemIndex + 1)
+  else
+    subroleSQL := 'NULL';
+
+  with DMMain.DataModule1.qryDeleteAndUpdate do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'UPDATE users SET ' +
+      'name = ' + QuotedStr(EditNameUM.Text) + ', ' +
+      'email = ' + QuotedStr(EditEmailUM.Text) + ', ' +
+      'password_hash = ' + QuotedStr(EditPasswordUM.Text) + ', ' +
+      'role = ' + QuotedStr(roleText) + ', ' +
+      'created_at = ' + QuotedStr(FormatDateTime('yyyy-mm-dd', DateTimePickerJoiningDateUM.Date)) + ', ' +
+      'subrole_id = ' + subroleSQL + ' ' +
+      'WHERE user_id = ' + userID;
+
+    ExecSQL;
+    MessageDlg('User updated successfully.', mtInformation, [mbOK], 0);
+
+    // Refresh the grid
+    DMMain.DataModule1.qryDBGridUM.Close;
+    DMMain.DataModule1.qryDBGridUM.Open;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+// DELETE USER:
+procedure TAdminForm.BtnRemoveUserClick(Sender: TObject);
+var
+  userID: string;
+begin
+  userID := EditUseridUM.Text;
+
+  if userID = '' then
+  begin
+    MessageDlg('Please select a user to delete.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  if MessageDlg('Are you sure you want to delete this user?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    with DMMain.DataModule1.qryDeleteAndUpdate do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Text := 'DELETE FROM users WHERE user_id = ' + userID;
+      ExecSQL;
+    end;
+
+    MessageDlg('User deleted successfully.', mtInformation, [mbOK], 0);
+
+    DMMain.DataModule1.qryDBGridUM.Close;
+    DMMain.DataModule1.qryDBGridUM.Open;
+  end;
+end;
+//==============================================================================
+procedure TAdminForm.BtnSubmitPAClick(Sender: TObject);
+var
+  i: Integer;
+  SelectedManagerID, SelectedEmployeeID, ProjectID: Integer;
+begin
+  if (EditProjectidPA.Text = '') then
+  begin
+    MessageDlg('Please enter a valid Project ID.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  if ComboBoxProjManagerPA.ItemIndex = -1 then
+  begin
+    MessageDlg('Please select a Project Manager.', mtWarning, [mbOK], 0);
+    Exit;
+  end;
+
+  ProjectID := StrToInt(EditProjectidPA.Text);
+  SelectedManagerID := Integer(ComboBoxProjManagerPA.Items.Objects[ComboBoxProjManagerPA.ItemIndex]);
+
+  for i := 0 to CheckListBoxEmployeesPA.Items.Count - 1 do
+  begin
+    if CheckListBoxEmployeesPA.Checked[i] then
+    begin
+      SelectedEmployeeID := Integer(CheckListBoxEmployeesPA.Items.Objects[i]);
+
+      with DMMain.DataModule1.qryAssignProject do
+      begin
+        Close;
+        SQL.Text :=
+          'INSERT INTO project_assignments (project_id, manager_id, employee_id) VALUES (' +
+          QuotedStr(IntToStr(ProjectID)) + ', ' +
+          QuotedStr(IntToStr(SelectedManagerID)) + ', ' +
+          QuotedStr(IntToStr(SelectedEmployeeID)) + ')';
+        ExecSQL;
+      end;
+    end;
+  end;
+
+  MessageDlg('Project successfully assigned to selected employees.', mtInformation, [mbOK], 0);
+
+  DMMain.DataModule1.qryProjectAssignments.Close;
+  DMMain.DataModule1.qryProjectAssignments.Open;
+end;
+//==============================================================================
+
+//------------------------------------------------------------------------------
+
+//==============================================================================
+procedure TAdminForm.DBGridCPCellClick(Column: TColumn);
+begin
+  with DMMain.DataModule1.qryDBGridCP do
+  begin
+    if not IsEmpty then
+    begin
+      EditProjectTitleCP.Text := FieldByName('title').AsString;
+      MemoProjDescCP.Lines.Text := FieldByName('description').AsString;
+
+      if not FieldByName('deadline').IsNull then
+        DateTimePickerDeadlineCP.Date := FieldByName('deadline').AsDateTime
+      else
+        DateTimePickerDeadlineCP.Date := Now;
+    end;
+  end;
+end;
+//==============================================================================
+
+// FETCH DATA FROM GRID TO EDIT BOXES:
+procedure TAdminForm.DBGridUMCellClick(Column: TColumn);
+begin
+  with DMMain.DataModule1.dsDBGridUM.DataSet do
+  begin
+    EditUseridUM.Text := FieldByName('user_id').AsString;
+    EditNameUM.Text := FieldByName('name').AsString;
+    EditEmailUM.Text := FieldByName('email').AsString;
+    EditPasswordUM.Text := FieldByName('password_hash').AsString;
+    ComboBoxRoleUM.Text := FieldByName('role').AsString;
+
+    if not FieldByName('subrole_id').IsNull then
+      ComboBoxSubroleUM.ItemIndex := FieldByName('subrole_id').AsInteger - 1
+    else
+      ComboBoxSubroleUM.ItemIndex := -1;
+
+    DateTimePickerJoiningDateUM.Date := FieldByName('created_at').AsDateTime;
+  end;
+end;
+
+//==============================================================================
+procedure TAdminForm.FormCreate(Sender: TObject);
+begin
+  // Load Managers into ComboBox
+  with DMMain.DataModule1.qryManagers do
+  begin
+    Close;
+    SQL.Text := 'SELECT user_id, name FROM users WHERE role = "Manager"';
+    Open;
+    ComboBoxProjManagerPA.Items.Clear;
+    while not Eof do
+    begin
+      ComboBoxProjManagerPA.Items.AddObject(FieldByName('name').AsString,
+                                            TObject(FieldByName('user_id').AsInteger));
+      Next;
+    end;
+  end;
+
+  // Load Employees into CheckListBox
+  with DMMain.DataModule1.qryEmployees do
+  begin
+    Close;
+    SQL.Text := 'SELECT user_id, name FROM users WHERE role = "Employee"';
+    Open;
+    CheckListBoxEmployeesPA.Items.Clear;
+    while not Eof do
+    begin
+      CheckListBoxEmployeesPA.Items.AddObject(FieldByName('name').AsString,
+                                              TObject(FieldByName('user_id').AsInteger));
+      Next;
+    end;
+  end;
+end;
+//==============================================================================
+end.

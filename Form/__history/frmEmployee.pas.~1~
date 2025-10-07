@@ -1,0 +1,75 @@
+unit frmEmployee;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids;
+
+type
+  TEmployeeForm = class(TForm)
+    PanelHeaderManager: TPanel;
+    LabelAssess360A: TLabel;
+    PanelManagerSidebar: TPanel;
+    BtnEmployeeViewProjectIndo: TButton;
+    BtnEmployeeManagerFeedback: TButton;
+    BtnEmployeeAboutMe: TButton;
+    PanelEmployeeAboutMe: TPanel;
+    ImgEmployeeAboutMe: TImage;
+    LblNameEmployeeAM: TLabel;
+    LblEmailEmployeeAM: TLabel;
+    LblRoleEmployeeAM: TLabel;
+    LblSubroleEmployeeAM: TLabel;
+    PanelEmployeeAboutMeHeader: TPanel;
+    EditNameEmployeeAM: TEdit;
+    EditEmailEmployeeAM: TEdit;
+    EditRoleEmployeeAM: TEdit;
+    EditSubroleEmployeeAM: TEdit;
+    PanelEmployeeViewProjectInfo: TPanel;
+    LblEmployeeViewTeammates: TLabel;
+    PanelEmployeeViewProjInfoHeader: TPanel;
+    DBGridVPI: TDBGrid;
+    ListBoxEmployeeViewTeammates: TListBox;
+    ScrollBoxManagerManagerFeedback: TScrollBox;
+    PanelEmployeeManagerFeedbackHeader: TPanel;
+    ScrollBoxEmployeeManagerFeedbackNestedAssessements: TScrollBox;
+    PanelEmployee: TPanel;
+    procedure BtnEmployeeViewProjectIndoClick(Sender: TObject);
+    procedure BtnEmployeeManagerFeedbackClick(Sender: TObject);
+    procedure BtnEmployeeAboutMeClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  EmployeeForm: TEmployeeForm;
+
+implementation
+
+{$R *.dfm}
+
+procedure TEmployeeForm.BtnEmployeeAboutMeClick(Sender: TObject);
+begin
+  PanelEmployeeViewProjectInfo.SendToBack;
+  ScrollBoxManagerManagerFeedback.SendToBack;
+  PanelEmployeeAboutMe.BringToFront;
+end;
+
+procedure TEmployeeForm.BtnEmployeeManagerFeedbackClick(Sender: TObject);
+begin
+  PanelEmployeeViewProjectInfo.SendToBack;
+  ScrollBoxManagerManagerFeedback.BringToFront;
+  PanelEmployeeAboutMe.SendToBack;
+end;
+
+procedure TEmployeeForm.BtnEmployeeViewProjectIndoClick(Sender: TObject);
+begin
+  PanelEmployeeViewProjectInfo.BringToFront;
+  ScrollBoxManagerManagerFeedback.SendToBack;
+  PanelEmployeeAboutMe.SendToBack;
+end;
+
+end.

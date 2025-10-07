@@ -1,0 +1,128 @@
+unit frmManager;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Data.DB, DMMain;
+
+type
+  TManagerForm = class(TForm)
+    PanelHeaderManager: TPanel;
+    LabelAssess360A: TLabel;
+    PanelManagerSidebar: TPanel;
+    BtnManagerViewProj: TButton;
+    BtnManagerAssessEmp: TButton;
+    BtnManagerAboutMe: TButton;
+    PanelManagerAboutMe: TPanel;
+    ImgManagerAboutMe: TImage;
+    LblNameManagerAM: TLabel;
+    LblEmailManagerAM: TLabel;
+    LblRoleManagerAM: TLabel;
+    LblSubroleManagerAM: TLabel;
+    PanelManagerAboutMeHeader: TPanel;
+    EditNameManagerAM: TEdit;
+    EditEmailManagerAM: TEdit;
+    EditRoleManagerAM: TEdit;
+    EditSubroleManagerAM: TEdit;
+    PanelManager: TPanel;
+    PanelManagerViewProjects: TPanel;
+    PanelManagerViewProjHeader: TPanel;
+    DBGridVAP: TDBGrid;
+    LblManagerViewSpecificEmployees: TLabel;
+    ListBox1: TListBox;
+    ScrollBoxManagerAssessEmployees: TScrollBox;
+    PanelManagerAssessEmployeeHeader: TPanel;
+    Label1: TLabel;
+    DBGrid2: TDBGrid;
+    ScrollBox2: TScrollBox;
+    procedure BtnManagerAboutMeClick(Sender: TObject);
+    procedure BtnManagerViewProjClick(Sender: TObject);
+    procedure BtnManagerAssessEmpClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure DBGridVAPCellClick(Column: TColumn);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  ManagerForm: TManagerForm;
+
+implementation
+
+{$R *.dfm}
+
+procedure TManagerForm.BtnManagerAboutMeClick(Sender: TObject);
+begin
+  BtnManagerViewProj.SendToBack;
+  ScrollBoxManagerAssessEmployees.SendToBack;
+  PanelManagerAboutMe.BringToFront;
+end;
+
+procedure TManagerForm.BtnManagerAssessEmpClick(Sender: TObject);
+begin
+  BtnManagerViewProj.SendToBack;
+  ScrollBoxManagerAssessEmployees.BringToFront;
+  PanelManagerAboutMe.SendToBack;
+end;
+
+procedure TManagerForm.BtnManagerViewProjClick(Sender: TObject);
+begin
+  BtnManagerViewProj.BringToFront;
+  ScrollBoxManagerAssessEmployees.SendToBack;
+  PanelManagerAboutMe.SendToBack;
+end;
+
+procedure TManagerForm.DBGridVAPCellClick(Column: TColumn);
+var
+  SelectedProjectID: Integer;
+begin
+  // Get selected project_id from the current row in the grid
+  SelectedProjectID := DataModule1.qryManagerViewAllProj.FieldByName('project_id').AsInteger;
+
+  // Populate ListBox1 with employees for this project
+  with DataModule1.qryEmployees do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'SELECT u.name AS employee_name ' +
+      'FROM project_assignments pa ' +
+      'JOIN users u ON pa.employee_id = u.user_id ' +
+      'WHERE pa.project_id = ' + QuotedStr(IntToStr(SelectedProjectID)) +
+      ' AND pa.manager_id = ' + QuotedStr(IntToStr(DataModule1.LoggedInUserID));
+    Open;
+
+    // Fill the ListBox
+    ListBox1.Clear;
+    while not Eof do
+    begin
+      ListBox1.Items.Add(FieldByName('employee_name').AsString);
+      Next;
+    end;
+  end;
+end;
+
+procedure TManagerForm.FormShow(Sender: TObject);
+begin
+  with DataModule1.qryManagerViewAllProj do
+  begin
+    Close;
+    SQL.Text :=
+      'SELECT p.project_id, p.title AS project_name, ' +
+      'e.name AS employee_name, e.email AS employee_email, ' +
+      'e.role AS employee_role, s.subrole_roles AS employee_subrole ' +
+      'FROM project_assignments pa ' +
+      'JOIN projects p ON pa.project_id = p.project_id ' +
+      'JOIN users e ON pa.employee_id = e.user_id ' +
+      'LEFT JOIN subrole s ON e.subrole_id = s.subrole_id ' +
+      'WHERE pa.manager_id = ' + QuotedStr(IntToStr(DataModule1.LoggedInUserID));
+
+    Open;
+  end;
+end;
+
+end.
