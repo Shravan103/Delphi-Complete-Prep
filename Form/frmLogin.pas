@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.ExtCtrls, Vcl.StdCtrls, DMMain, frmAdmin, Data.DB, System.UITypes,
-  frmManager, frmEmployee;
+  frmManager, frmEmployee, Vcl.Imaging.jpeg;
 
 type
   TLoginForm = class(TForm)
@@ -22,6 +22,7 @@ type
     LblLoginName: TLabel;
     LblLoginEmail: TLabel;
     LblLoginPass: TLabel;
+    ImgBGImage: TImage;
     procedure BtnLoginClick(Sender: TObject);
   private
     { Private declarations }
@@ -70,6 +71,7 @@ begin
     begin
       DataModule1.LoggedInUserID := DataModule1.qryLogin.FieldByName('user_id').AsInteger;
 
+      frmManager.ManagerForm.EditManagerIDAboutMe.Text := DataModule1.qryLogin.FieldByName('user_id').AsString;
       frmManager.ManagerForm.EditNameManagerAM.Text := DataModule1.qryLogin.FieldByName('name').AsString;
       frmManager.ManagerForm.EditEmailManagerAM.Text := DataModule1.qryLogin.FieldByName('email').AsString;
       frmManager.ManagerForm.EditRoleManagerAM.Text := DataModule1.qryLogin.FieldByName('role').AsString;
@@ -79,6 +81,8 @@ begin
     end
     else if userRole = 'Employee' then
     begin
+      DataModule1.LoggedInUserID := DataModule1.qryLogin.FieldByName('user_id').AsInteger;
+
       frmEmployee.EmployeeForm.EditNameEmployeeAM.Text := DataModule1.qryLogin.FieldByName('name').AsString;
       frmEmployee.EmployeeForm.EditEmailEmployeeAM.Text := DataModule1.qryLogin.FieldByName('email').AsString;
       frmEmployee.EmployeeForm.EditRoleEmployeeAM.Text := DataModule1.qryLogin.FieldByName('role').AsString;

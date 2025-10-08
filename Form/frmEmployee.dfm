@@ -11,6 +11,7 @@ object EmployeeForm: TEmployeeForm
   Font.Name = 'Tahoma'
   Font.Style = []
   WindowState = wsMaximized
+  OnShow = FormShow
   TextHeight = 13
   object PanelEmployee: TPanel
     Left = 0
@@ -48,11 +49,13 @@ object EmployeeForm: TEmployeeForm
       Height = 647
       Align = alLeft
       BorderStyle = bsSingle
+      Color = clScrollBar
+      ParentBackground = False
       TabOrder = 1
       object BtnEmployeeViewProjectIndo: TButton
-        Left = 2
-        Top = 2
-        Width = 208
+        Left = 5
+        Top = 7
+        Width = 202
         Height = 97
         Caption = 'View Project Info'
         Font.Charset = ANSI_CHARSET
@@ -65,9 +68,9 @@ object EmployeeForm: TEmployeeForm
         OnClick = BtnEmployeeViewProjectIndoClick
       end
       object BtnEmployeeManagerFeedback: TButton
-        Left = 2
-        Top = 100
-        Width = 208
+        Left = 5
+        Top = 110
+        Width = 202
         Height = 97
         Caption = 'Manager Feedback'
         Font.Charset = ANSI_CHARSET
@@ -80,9 +83,9 @@ object EmployeeForm: TEmployeeForm
         OnClick = BtnEmployeeManagerFeedbackClick
       end
       object BtnEmployeeAboutMe: TButton
-        Left = 2
-        Top = 542
-        Width = 208
+        Left = 5
+        Top = 539
+        Width = 202
         Height = 97
         Caption = 'About Me'
         Font.Charset = ANSI_CHARSET
@@ -93,39 +96,6 @@ object EmployeeForm: TEmployeeForm
         ParentFont = False
         TabOrder = 2
         OnClick = BtnEmployeeAboutMeClick
-      end
-    end
-    object ScrollBoxManagerManagerFeedback: TScrollBox
-      Left = 224
-      Top = 63
-      Width = 1134
-      Height = 635
-      TabOrder = 4
-      object PanelEmployeeManagerFeedbackHeader: TPanel
-        Left = 0
-        Top = 0
-        Width = 1130
-        Height = 41
-        Align = alTop
-        Caption = 'Manager Feedback'
-        Color = clLime
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -21
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-      end
-      object ScrollBoxEmployeeManagerFeedbackNestedAssessements: TScrollBox
-        Left = 24
-        Top = 65
-        Width = 1081
-        Height = 544
-        Color = clActiveBorder
-        ParentColor = False
-        TabOrder = 1
       end
     end
     object PanelEmployeeAboutMe: TPanel
@@ -11181,7 +11151,7 @@ object EmployeeForm: TEmployeeForm
         Height = 41
         Align = alTop
         Caption = 'About Me'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11259,19 +11229,6 @@ object EmployeeForm: TEmployeeForm
       Height = 635
       BorderStyle = bsSingle
       TabOrder = 3
-      object LblEmployeeViewTeammates: TLabel
-        Left = 506
-        Top = 403
-        Width = 142
-        Height = 19
-        Caption = 'View your Teammates:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object PanelEmployeeViewProjInfoHeader: TPanel
         Left = 1
         Top = 1
@@ -11279,7 +11236,7 @@ object EmployeeForm: TEmployeeForm
         Height = 41
         Align = alTop
         Caption = 'View Project Information'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11289,25 +11246,146 @@ object EmployeeForm: TEmployeeForm
         ParentFont = False
         TabOrder = 0
       end
-      object DBGridVPI: TDBGrid
-        Left = 208
-        Top = 112
-        Width = 705
-        Height = 213
+      object PanelContDBGridVPI: TPanel
+        Left = 24
+        Top = 65
+        Width = 1081
+        Height = 288
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
+        object DBGridVPI: TDBGrid
+          Left = 200
+          Top = 38
+          Width = 681
+          Height = 213
+          DataSource = DataModule1.dsDBGridVPI
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          OnCellClick = DBGridVPICellClick
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'project_id'
+              Width = 55
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'project_name'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_name'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_email'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_role'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_subrole'
+              Width = 120
+              Visible = True
+            end>
+        end
       end
-      object ListBoxEmployeeViewTeammates: TListBox
-        Left = 352
-        Top = 428
-        Width = 433
-        Height = 153
-        ItemHeight = 13
+      object PanelContViewTeammates: TPanel
+        Left = 24
+        Top = 367
+        Width = 1081
+        Height = 242
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 2
+        object LblEmployeeViewTeammates: TLabel
+          Left = 468
+          Top = 32
+          Width = 142
+          Height = 19
+          Caption = 'View your Teammates:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object StringGridEmployeeViewTeammates: TStringGrid
+          Left = 342
+          Top = 57
+          Width = 393
+          Height = 161
+          DefaultColWidth = 100
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          RowHeights = (
+            24
+            24
+            24
+            24
+            24)
+        end
+      end
+    end
+    object ScrollBoxManagerManagerFeedback: TScrollBox
+      Left = 224
+      Top = 63
+      Width = 1134
+      Height = 635
+      TabOrder = 4
+      object PanelEmployeeManagerFeedbackHeader: TPanel
+        Left = 0
+        Top = 0
+        Width = 1130
+        Height = 41
+        Align = alTop
+        Caption = 'Manager Feedback'
+        Color = clGradientActiveCaption
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -21
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 0
+      end
+      object ScrollBoxEmployeeManagerFeedbackNestedAssessements: TScrollBox
+        Left = 24
+        Top = 65
+        Width = 1081
+        Height = 544
+        Color = clActiveBorder
+        ParentColor = False
+        TabOrder = 1
       end
     end
   end

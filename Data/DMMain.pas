@@ -3,32 +3,38 @@ unit DMMain;
 interface
 
 uses
-  System.SysUtils, System.Classes, Data.Win.ADODB, Data.DB;
+  System.SysUtils, System.Classes, Data.Win.ADODB, Data.DB, IniFiles, Vcl.Forms;
 
 type
   TDataModule1 = class(TDataModule)
     ADOConnection1: TADOConnection;
-    qryAdminInsertUsers: TADOQuery;
+    qryAdminInsDelUpdUsers: TADOQuery;
     qryDBGridUM: TADOQuery;
     dsDBGridUM: TDataSource;
-    qryDeleteAndUpdate: TADOQuery;
     qryLogin: TADOQuery;
     qryDBGridCP: TADOQuery;
     dsDBGridCP: TDataSource;
     qryCreateProject: TADOQuery;
-    qryProjectAssignments: TADOQuery;
-    dsProjectAssignments: TDataSource;
-    qryManagers: TADOQuery;
-    qryEmployees: TADOQuery;
+    qryProjectsManagersEmployees: TADOQuery;
+    qryDBGridPA: TADOQuery;
+    dsDBGridPA: TDataSource;
     qryAssignProject: TADOQuery;
-    qryProjects: TADOQuery;
-    qryManagerViewAllProj: TADOQuery;
-    dsManagerViewAllProj: TDataSource;
+    qryDBGridVAP: TADOQuery;
+    dsDBGridVAP: TDataSource;
+    qryEmployees: TADOQuery;
+    qryDBGridVPI: TADOQuery;
+    dsDBGridVPI: TDataSource;
+    qryTeammates: TADOQuery;
+    qryDBGridAE: TADOQuery;
+    dsDBGridAE: TDataSource;
+    qryDeleteAndUpdate: TADOQuery;
+    qryManagers: TADOQuery;
   private
     { Private declarations }
   public
     { Public declarations }
     LoggedInUserID: Integer;
+    procedure LoadConnectionFromINI;
   end;
 
 var
@@ -40,4 +46,25 @@ implementation
 
 {$R *.dfm}
 
+procedure TDataModule1.LoadConnectionFromINI;
+var
+  ini: TIniFile;
+begin
+  ini := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'config.ini');
+  try
+    ADOConnection1.Connected := False;
+    ADOConnection1.ConnectionString := 'Provider=MSDASQL.1;' +
+      'Driver={MySQL ODBC 8.0 Unicode Driver};' +
+      'Server='   + ini.ReadString('Database', 'Server', '') + ';' +
+      'Database=' + ini.ReadString('Database', 'Database', '') + ';' +
+      'User='     + ini.ReadString('Database', 'UserName', '') + ';' +
+      'Password=' + ini.ReadString('Database', 'Password', '') + ';' +
+      'Port='     + ini.ReadString('Database', 'Port', '') + ';' ;
+
+//    ADOConnection1.LoginPrompt := False;
+    ADOConnection1.Connected := True;
+  finally
+    ini.Free;
+  end;
+end;
 end.

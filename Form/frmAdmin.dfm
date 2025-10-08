@@ -2,7 +2,7 @@ object AdminForm: TAdminForm
   Left = 0
   Top = 0
   Caption = 'ADMIN'
-  ClientHeight = 732
+  ClientHeight = 714
   ClientWidth = 1370
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,11 +11,11 @@ object AdminForm: TAdminForm
   Font.Name = 'Tahoma'
   Font.Style = []
   WindowState = wsMaximized
-  OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 13
   object PanelAdmin: TPanel
     Left = 0
-    Top = 0
+    Top = -2
     Width = 1369
     Height = 705
     TabOrder = 0
@@ -41,6 +41,19 @@ object AdminForm: TAdminForm
         Font.Style = [fsBold]
         ParentFont = False
       end
+      object LblAdminDashbaord: TLabel
+        Left = 23
+        Top = 12
+        Width = 225
+        Height = 38
+        Caption = 'Admin Dashboard'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -32
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
     end
     object PanelAdminSidebar: TPanel
       Left = 1
@@ -49,11 +62,13 @@ object AdminForm: TAdminForm
       Height = 647
       Align = alLeft
       BorderStyle = bsSingle
+      Color = clScrollBar
+      ParentBackground = False
       TabOrder = 1
       object BtnAdminCreateProj: TButton
-        Left = 2
-        Top = 2
-        Width = 208
+        Left = 7
+        Top = 7
+        Width = 199
         Height = 97
         Caption = 'Create New Project'
         Font.Charset = ANSI_CHARSET
@@ -66,9 +81,9 @@ object AdminForm: TAdminForm
         OnClick = BtnAdminCreateProjClick
       end
       object BtnAdminProjAssign: TButton
-        Left = 2
-        Top = 100
-        Width = 208
+        Left = 7
+        Top = 109
+        Width = 199
         Height = 97
         Caption = 'Project Assignment'
         Font.Charset = ANSI_CHARSET
@@ -81,10 +96,10 @@ object AdminForm: TAdminForm
         OnClick = BtnAdminProjAssignClick
       end
       object BtnUserManage: TButton
-        Left = 2
-        Top = 198
-        Width = 208
-        Height = 97
+        Left = 7
+        Top = 210
+        Width = 199
+        Height = 99
         Caption = 'User Management'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
@@ -96,9 +111,9 @@ object AdminForm: TAdminForm
         OnClick = BtnUserManageClick
       end
       object BtnAdminAboutMe: TButton
-        Left = 2
-        Top = 542
-        Width = 208
+        Left = 7
+        Top = 538
+        Width = 199
         Height = 97
         Caption = 'About Me'
         Font.Charset = ANSI_CHARSET
@@ -118,6 +133,58 @@ object AdminForm: TAdminForm
       Height = 635
       BorderStyle = bsSingle
       TabOrder = 5
+      object LblNameAdminAM: TLabel
+        Left = 454
+        Top = 287
+        Width = 33
+        Height = 15
+        Caption = 'Name:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object LblEmailAdminAM: TLabel
+        Left = 454
+        Top = 359
+        Width = 31
+        Height = 15
+        Caption = 'Email:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object LblRoleAdminAM: TLabel
+        Left = 454
+        Top = 428
+        Width = 25
+        Height = 15
+        Caption = 'Role:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object LblSubroleAdminAM: TLabel
+        Left = 453
+        Top = 496
+        Width = 41
+        Height = 15
+        Caption = 'Subrole:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
       object ImgAdminAboutMe: TImage
         Left = 512
         Top = 81
@@ -11105,58 +11172,6 @@ object AdminForm: TAdminForm
         Stretch = True
         Transparent = True
       end
-      object LblNameAdminAM: TLabel
-        Left = 454
-        Top = 287
-        Width = 33
-        Height = 15
-        Caption = 'Name:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblEmailAdminAM: TLabel
-        Left = 454
-        Top = 359
-        Width = 31
-        Height = 15
-        Caption = 'Email:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblRoleAdminAM: TLabel
-        Left = 454
-        Top = 428
-        Width = 25
-        Height = 15
-        Caption = 'Role:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblSubroleAdminAM: TLabel
-        Left = 453
-        Top = 496
-        Width = 41
-        Height = 15
-        Caption = 'Subrole:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object PanelHeaderAdminAboutMe: TPanel
         Left = 1
         Top = 1
@@ -11164,7 +11179,7 @@ object AdminForm: TAdminForm
         Height = 41
         Align = alTop
         Caption = 'About Me'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11235,294 +11250,6 @@ object AdminForm: TAdminForm
         TabOrder = 4
       end
     end
-    object PanelUserManagement: TPanel
-      Left = 224
-      Top = 63
-      Width = 1137
-      Height = 635
-      BorderStyle = bsSingle
-      TabOrder = 4
-      object LblUseridUM: TLabel
-        Left = 480
-        Top = 336
-        Width = 48
-        Height = 18
-        Caption = 'User ID:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblEmailUM: TLabel
-        Left = 713
-        Top = 379
-        Width = 40
-        Height = 18
-        Caption = 'Email: '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblRoleUM: TLabel
-        Left = 252
-        Top = 437
-        Width = 30
-        Height = 18
-        Caption = 'Role:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblSubroleUM: TLabel
-        Left = 252
-        Top = 496
-        Width = 58
-        Height = 18
-        Caption = 'Sub-Role:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblNameUM: TLabel
-        Left = 252
-        Top = 379
-        Width = 41
-        Height = 18
-        Caption = 'Name: '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblPasswordUM: TLabel
-        Left = 713
-        Top = 440
-        Width = 65
-        Height = 18
-        Caption = 'Password: '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblJoiningDateUM: TLabel
-        Left = 713
-        Top = 496
-        Width = 81
-        Height = 18
-        Caption = 'Joining Date: '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object PanelUserManagementHeader: TPanel
-        Left = 1
-        Top = 1
-        Width = 1131
-        Height = 41
-        Align = alTop
-        Caption = 'User Management'
-        Color = clLime
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -21
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentBackground = False
-        ParentFont = False
-        TabOrder = 0
-      end
-      object DBGridUM: TDBGrid
-        Left = 232
-        Top = 94
-        Width = 673
-        Height = 204
-        DataSource = DataModule1.dsDBGridUM
-        TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        OnCellClick = DBGridUMCellClick
-        Columns = <
-          item
-            Alignment = taLeftJustify
-            Color = clYellow
-            Expanded = False
-            FieldName = 'user_id'
-            Width = 50
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'name'
-            Width = 70
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'email'
-            Width = 125
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'password_hash'
-            Width = 110
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'role'
-            Width = 75
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'created_at'
-            Width = 70
-            Visible = True
-          end
-          item
-            Alignment = taLeftJustify
-            Color = clSilver
-            Expanded = False
-            FieldName = 'subrole_id'
-            Width = 55
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'subrole_roles'
-            Visible = True
-          end>
-      end
-      object EditUseridUM: TEdit
-        Left = 476
-        Top = 359
-        Width = 174
-        Height = 21
-        Enabled = False
-        ReadOnly = True
-        TabOrder = 2
-      end
-      object EditEmailUM: TEdit
-        Left = 713
-        Top = 403
-        Width = 174
-        Height = 21
-        TabOrder = 3
-      end
-      object EditNameUM: TEdit
-        Left = 252
-        Top = 403
-        Width = 174
-        Height = 21
-        TabOrder = 4
-      end
-      object ComboBoxRoleUM: TComboBox
-        Left = 252
-        Top = 458
-        Width = 174
-        Height = 21
-        TabOrder = 5
-        Items.Strings = (
-          'Admin'
-          'Manager'
-          'Employee')
-      end
-      object EditPasswordUM: TEdit
-        Left = 713
-        Top = 458
-        Width = 174
-        Height = 21
-        TabOrder = 6
-      end
-      object ComboBoxSubroleUM: TComboBox
-        Left = 252
-        Top = 516
-        Width = 174
-        Height = 21
-        TabOrder = 7
-        Items.Strings = (
-          'Developer'
-          'Trainee'
-          'Designer')
-      end
-      object DateTimePickerJoiningDateUM: TDateTimePicker
-        Left = 713
-        Top = 516
-        Width = 174
-        Height = 21
-        Date = 45933.000000000000000000
-        Time = 0.526393101848952900
-        TabOrder = 8
-      end
-      object BtnRemoveUser: TButton
-        Left = 368
-        Top = 568
-        Width = 113
-        Height = 34
-        Caption = 'Remove User'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 9
-        OnClick = BtnRemoveUserClick
-      end
-      object BtnAddUser: TButton
-        Left = 512
-        Top = 568
-        Width = 113
-        Height = 33
-        Caption = 'Add User'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 10
-        OnClick = BtnAddUserClick
-      end
-      object BtnUpdateUser: TButton
-        Left = 662
-        Top = 568
-        Width = 113
-        Height = 33
-        Caption = 'Update User'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 11
-        OnClick = BtnUpdateUserClick
-      end
-    end
     object PanelCreateNewProject: TPanel
       Left = 224
       Top = 63
@@ -11530,85 +11257,6 @@ object AdminForm: TAdminForm
       Height = 634
       BorderStyle = bsSingle
       TabOrder = 2
-      object LblAdminProjectTitleCP: TLabel
-        Left = 440
-        Top = 324
-        Width = 77
-        Height = 18
-        Caption = 'Project Title:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblAdminProjectDescCP: TLabel
-        Left = 440
-        Top = 382
-        Width = 119
-        Height = 18
-        Caption = 'Project Description:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblAdminProjDeadlineCP: TLabel
-        Left = 440
-        Top = 493
-        Width = 105
-        Height = 18
-        Caption = 'Project Deadline: '
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object DBGridCP: TDBGrid
-        Left = 216
-        Top = 104
-        Width = 713
-        Height = 193
-        DataSource = DataModule1.dsDBGridCP
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        OnCellClick = DBGridCPCellClick
-        Columns = <
-          item
-            Color = clYellow
-            Expanded = False
-            FieldName = 'project_id'
-            Width = 55
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'title'
-            Width = 200
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'description'
-            Width = 300
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'deadline'
-            Width = 80
-            Visible = True
-          end>
-      end
       object PanelHeaderAdminCreateNewProj: TPanel
         Left = 1
         Top = 1
@@ -11616,7 +11264,7 @@ object AdminForm: TAdminForm
         Height = 41
         Align = alTop
         Caption = 'Create New Project'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11624,45 +11272,182 @@ object AdminForm: TAdminForm
         Font.Style = [fsBold]
         ParentBackground = False
         ParentFont = False
+        TabOrder = 0
+      end
+      object PanelContDBGridCP: TPanel
+        Left = 24
+        Top = 62
+        Width = 1081
+        Height = 224
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 1
+        object DBGridCP: TDBGrid
+          Left = 294
+          Top = 17
+          Width = 497
+          Height = 193
+          DataSource = DataModule1.dsDBGridCP
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          OnCellClick = DBGridCPCellClick
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'project_id'
+              Width = 100
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'title'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'description'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'deadline'
+              Width = 120
+              Visible = True
+            end>
+        end
       end
-      object EditProjectTitleCP: TEdit
-        Left = 440
-        Top = 348
-        Width = 257
-        Height = 21
+      object PanelContEditBoxBtnCP: TPanel
+        Left = 24
+        Top = 292
+        Width = 1081
+        Height = 316
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 2
-      end
-      object BtnCreateNewProjectCP: TButton
-        Left = 512
-        Top = 560
-        Width = 129
-        Height = 41
-        Caption = 'SUBMIT'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 3
-        OnClick = BtnCreateNewProjectCPClick
-      end
-      object MemoProjDescCP: TMemo
-        Left = 440
-        Top = 406
-        Width = 257
-        Height = 64
-        TabOrder = 4
-      end
-      object DateTimePickerDeadlineCP: TDateTimePicker
-        Left = 440
-        Top = 517
-        Width = 257
-        Height = 21
-        Date = 45933.000000000000000000
-        Time = 0.477950046297337400
-        TabOrder = 5
+        object LblAdminProjectTitleCP: TLabel
+          Left = 427
+          Top = 31
+          Width = 77
+          Height = 18
+          Caption = 'Project Title:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminProjectDescCP: TLabel
+          Left = 427
+          Top = 85
+          Width = 119
+          Height = 18
+          Caption = 'Project Description:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminProjDeadlineCP: TLabel
+          Left = 427
+          Top = 181
+          Width = 105
+          Height = 18
+          Caption = 'Project Deadline: '
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object EditProjectTitleCP: TEdit
+          Left = 427
+          Top = 52
+          Width = 257
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+        object BtnCreateNewProjectCP: TButton
+          Left = 427
+          Top = 248
+          Width = 120
+          Height = 41
+          Caption = 'SUBMIT'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          OnClick = BtnCreateNewProjectCPClick
+        end
+        object MemoProjDescCP: TMemo
+          Left = 427
+          Top = 106
+          Width = 257
+          Height = 64
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 2
+        end
+        object DateTimePickerDeadlineCP: TDateTimePicker
+          Left = 427
+          Top = 200
+          Width = 257
+          Height = 24
+          Date = 45933.000000000000000000
+          Time = 0.477950046297337400
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
+        end
+        object BitBtnRefreshCP: TBitBtn
+          Left = 565
+          Top = 248
+          Width = 119
+          Height = 41
+          Caption = '&REFRESH'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          Kind = bkRetry
+          NumGlyphs = 2
+          ParentFont = False
+          TabOrder = 4
+          OnClick = BitBtnRefreshCPClick
+        end
       end
     end
     object PanelProjectAssignment: TPanel
@@ -11672,45 +11457,6 @@ object AdminForm: TAdminForm
       Height = 635
       BorderStyle = bsSingle
       TabOrder = 3
-      object LblProjectIdPA: TLabel
-        Left = 216
-        Top = 413
-        Width = 63
-        Height = 18
-        Caption = 'Project ID:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblProjectManagerPA: TLabel
-        Left = 472
-        Top = 416
-        Width = 101
-        Height = 18
-        Caption = 'Project Manager:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object LblProjectEmployeePA: TLabel
-        Left = 736
-        Top = 416
-        Width = 68
-        Height = 18
-        Caption = 'Employees:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -15
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object PanelHeaderAdminProjAssignment: TPanel
         Left = 1
         Top = 1
@@ -11718,7 +11464,7 @@ object AdminForm: TAdminForm
         Height = 41
         Align = alTop
         Caption = 'Project Assignment'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11728,86 +11474,543 @@ object AdminForm: TAdminForm
         ParentFont = False
         TabOrder = 0
       end
-      object DBGridPA: TDBGrid
-        Left = 216
-        Top = 142
-        Width = 721
-        Height = 176
-        DataSource = DataModule1.dsProjectAssignments
+      object PanelContDBGridPA: TPanel
+        Left = 24
+        Top = 69
+        Width = 1081
+        Height = 224
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'assignment_id'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'project_id'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'project_title'
-            Width = 120
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'manager_name'
-            Width = 120
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'employee_name'
-            Width = 120
-            Visible = True
-          end>
+        object DBGridPA: TDBGrid
+          Left = 249
+          Top = 25
+          Width = 581
+          Height = 176
+          DataSource = DataModule1.dsDBGridPA
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'assignment_id'
+              Width = 100
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'project_id'
+              Width = 100
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'project_title'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'manager_name'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_name'
+              Width = 120
+              Visible = True
+            end>
+        end
       end
-      object ComboBoxProjManagerPA: TComboBox
-        Left = 465
-        Top = 440
-        Width = 185
-        Height = 21
+      object PanelContEditboxesPA: TPanel
+        Left = 24
+        Top = 299
+        Width = 1081
+        Height = 306
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 2
+        object LblProjectIdPA: TLabel
+          Left = 222
+          Top = 59
+          Width = 84
+          Height = 18
+          Caption = 'Project Name:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblProjectManagerPA: TLabel
+          Left = 446
+          Top = 59
+          Width = 101
+          Height = 18
+          Caption = 'Project Manager:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblProjectEmployeePA: TLabel
+          Left = 673
+          Top = 58
+          Width = 68
+          Height = 18
+          Caption = 'Employees:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object ComboBoxProjManagerPA: TComboBox
+          Left = 446
+          Top = 82
+          Width = 185
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
+        object CheckListBoxEmployeesPA: TCheckListBox
+          Left = 674
+          Top = 82
+          Width = 201
+          Height = 97
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ItemHeight = 17
+          ParentFont = False
+          TabOrder = 1
+        end
+        object BtnSubmitPA: TButton
+          Left = 485
+          Top = 229
+          Width = 129
+          Height = 40
+          Caption = 'SUBMIT'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 2
+          OnClick = BtnSubmitPAClick
+        end
+        object ComboBoxProjectPA: TComboBox
+          Left = 222
+          Top = 82
+          Width = 185
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
+        end
       end
-      object CheckListBoxEmployeesPA: TCheckListBox
-        Left = 736
-        Top = 440
-        Width = 201
-        Height = 97
-        ItemHeight = 17
-        TabOrder = 3
-      end
-      object BtnSubmitPA: TButton
-        Left = 512
-        Top = 561
-        Width = 129
-        Height = 40
-        Caption = 'SUBMIT'
+    end
+    object PanelUserManagement: TPanel
+      Left = 224
+      Top = 63
+      Width = 1137
+      Height = 635
+      BorderStyle = bsSingle
+      TabOrder = 4
+      object PanelUserManagementHeader: TPanel
+        Left = 1
+        Top = 1
+        Width = 1131
+        Height = 41
+        Align = alTop
+        Caption = 'User Management'
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
-        Font.Height = -15
+        Font.Height = -21
         Font.Name = 'Roboto Cn'
         Font.Style = [fsBold]
+        ParentBackground = False
         ParentFont = False
-        TabOrder = 4
-        OnClick = BtnSubmitPAClick
+        TabOrder = 0
       end
-      object ComboBoxProjectPA: TComboBox
-        Left = 216
-        Top = 440
-        Width = 177
-        Height = 21
-        TabOrder = 5
+      object PanelContDBGridUM: TPanel
+        Left = 24
+        Top = 63
+        Width = 1081
+        Height = 224
+        Color = clScrollBar
+        ParentBackground = False
+        TabOrder = 1
+        object DBGridUM: TDBGrid
+          Left = 196
+          Top = 18
+          Width = 669
+          Height = 187
+          DataSource = DataModule1.dsDBGridUM
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          OnCellClick = DBGridUMCellClick
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'user_id'
+              Width = 50
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'name'
+              Width = 70
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'email'
+              Width = 125
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'password_hash'
+              Width = 110
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'role'
+              Width = 75
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'created_at'
+              Width = 70
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'subrole_id'
+              Width = 55
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'subrole_roles'
+              Visible = True
+            end>
+        end
+      end
+      object PanelContEditBoxesUM: TPanel
+        Left = 24
+        Top = 293
+        Width = 1081
+        Height = 237
+        Color = clScrollBar
+        ParentBackground = False
+        TabOrder = 2
+        object LblAdminUMUserID: TLabel
+          Left = 448
+          Top = 33
+          Width = 48
+          Height = 18
+          Caption = 'User ID:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMEmail: TLabel
+          Left = 681
+          Top = 33
+          Width = 40
+          Height = 18
+          Caption = 'Email: '
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMRole: TLabel
+          Left = 220
+          Top = 91
+          Width = 30
+          Height = 18
+          Caption = 'Role:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMSubrole: TLabel
+          Left = 220
+          Top = 150
+          Width = 58
+          Height = 18
+          Caption = 'Sub-Role:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMName: TLabel
+          Left = 220
+          Top = 33
+          Width = 41
+          Height = 18
+          Caption = 'Name: '
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMPassword: TLabel
+          Left = 681
+          Top = 94
+          Width = 65
+          Height = 18
+          Caption = 'Password: '
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object LblAdminUMJoiningDate: TLabel
+          Left = 681
+          Top = 150
+          Width = 81
+          Height = 18
+          Caption = 'Joining Date: '
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object EditUseridUM: TEdit
+          Left = 448
+          Top = 57
+          Width = 174
+          Height = 24
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object EditEmailUM: TEdit
+          Left = 681
+          Top = 57
+          Width = 174
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 1
+        end
+        object EditNameUM: TEdit
+          Left = 220
+          Top = 57
+          Width = 174
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 2
+        end
+        object ComboBoxRoleUM: TComboBox
+          Left = 220
+          Top = 112
+          Width = 174
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 3
+          Items.Strings = (
+            'Admin'
+            'Manager'
+            'Employee')
+        end
+        object EditPasswordUM: TEdit
+          Left = 681
+          Top = 112
+          Width = 174
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 4
+        end
+        object ComboBoxSubroleUM: TComboBox
+          Left = 220
+          Top = 170
+          Width = 174
+          Height = 24
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 5
+          Items.Strings = (
+            'Developer'
+            'Trainee'
+            'Designer')
+        end
+        object DateTimePickerJoiningDateUM: TDateTimePicker
+          Left = 681
+          Top = 174
+          Width = 174
+          Height = 24
+          Date = 45933.000000000000000000
+          Time = 0.526393101848952900
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 6
+        end
+      end
+      object PanelContBtnUM: TPanel
+        Left = 24
+        Top = 536
+        Width = 1081
+        Height = 73
+        Color = clScrollBar
+        ParentBackground = False
+        TabOrder = 3
+        object BtnRemoveUser: TButton
+          Left = 275
+          Top = 18
+          Width = 113
+          Height = 41
+          Caption = 'Remove User'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 0
+          OnClick = BtnRemoveUserClick
+        end
+        object BtnAddUser: TButton
+          Left = 411
+          Top = 19
+          Width = 113
+          Height = 41
+          Caption = 'Add User'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 1
+          OnClick = BtnAddUserClick
+        end
+        object BtnUpdateUser: TButton
+          Left = 550
+          Top = 19
+          Width = 113
+          Height = 41
+          Caption = 'Update User'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+          TabOrder = 2
+          OnClick = BtnUpdateUserClick
+        end
+        object BitBtn1: TBitBtn
+          Left = 691
+          Top = 16
+          Width = 113
+          Height = 41
+          Caption = '&Refresh'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -15
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          Kind = bkRetry
+          NumGlyphs = 2
+          ParentFont = False
+          TabOrder = 3
+          OnClick = BitBtn1Click
+        end
       end
     end
   end

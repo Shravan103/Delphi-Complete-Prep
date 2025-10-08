@@ -1,0 +1,152 @@
+object DataModule1: TDataModule1
+  OldCreateOrder = False
+  Height = 615
+  Width = 779
+  object ADOConnection1: TADOConnection
+    LoginPrompt = False
+    Provider = 'MSDASQL.1'
+    Left = 68
+    Top = 24
+  end
+  object qryAdminInsDelUpdUsers: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 68
+    Top = 232
+  end
+  object qryDBGridUM: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * '
+      ' FROM users u '
+      'LEFT OUTER JOIN subrole s'
+      'ON u.subrole_id = s.subrole_id;')
+    Left = 68
+    Top = 184
+  end
+  object dsDBGridUM: TDataSource
+    DataSet = qryDBGridUM
+    Left = 132
+    Top = 184
+  end
+  object qryLogin: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 68
+    Top = 104
+  end
+  object qryDBGridCP: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM projects;')
+    Left = 68
+    Top = 312
+  end
+  object dsDBGridCP: TDataSource
+    DataSet = qryDBGridCP
+    Left = 132
+    Top = 312
+  end
+  object qryCreateProject: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 68
+    Top = 360
+  end
+  object qryProjectsManagersEmployees: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 68
+    Top = 488
+  end
+  object qryDBGridPA: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT pa.assignment_id, p.project_id, p.title AS project_title,'
+      ' m.name AS manager_name, e.name AS employee_name '
+      'FROM project_assignments pa '
+      'JOIN projects p '
+      'ON pa.project_id = p.project_id '
+      'JOIN users m '
+      'ON pa.manager_id = m.user_id '
+      'JOIN users e '
+      'ON pa.employee_id = e.user_id;')
+    Left = 68
+    Top = 440
+  end
+  object dsDBGridPA: TDataSource
+    DataSet = qryDBGridPA
+    Left = 132
+    Top = 440
+  end
+  object qryAssignProject: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 68
+    Top = 536
+  end
+  object qryDBGridVAP: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT '
+      '  p.project_id, '
+      '  p.title AS project_name,'
+      '  e.name AS employee_name, '
+      '  e.email AS employee_email,'
+      '  e.role AS employee_role, '
+      '  s.subrole_roles AS employee_subrole'
+      'FROM project_assignments pa'
+      'JOIN projects p ON pa.project_id = p.project_id'
+      'JOIN users e ON pa.employee_id = e.user_id'
+      'LEFT JOIN subrole s ON e.subrole_id = s.subrole_id'
+      'WHERE 1=0;')
+    Left = 337
+    Top = 184
+  end
+  object dsDBGridVAP: TDataSource
+    DataSet = qryDBGridVAP
+    Left = 409
+    Top = 184
+  end
+  object qryEmployees: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 337
+    Top = 232
+  end
+  object qryDBGridVPI: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT p.project_id, p.title AS project_name,'
+      'e.name AS employee_name, e.email AS employee_email,'
+      'e.role AS employee_role, s.subrole_roles AS employee_subrole'
+      'FROM project_assignments pa'
+      'JOIN projects p ON pa.project_id = p.project_id'
+      'JOIN users e ON pa.employee_id = e.user_id'
+      'LEFT JOIN subrole s ON e.subrole_id = s.subrole_id'
+      'WHERE 1=0')
+    Left = 616
+    Top = 184
+  end
+  object dsDBGridVPI: TDataSource
+    DataSet = qryDBGridVPI
+    Left = 680
+    Top = 184
+  end
+  object qryTeammates: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 616
+    Top = 232
+  end
+end

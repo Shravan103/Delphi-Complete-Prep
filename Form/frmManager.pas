@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Imaging.jpeg,
-  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, Data.DB, DMMain;
+  Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids, DMMain, Data.DB, Vcl.Samples.Spin;
 
 type
   TManagerForm = class(TForm)
@@ -29,19 +29,27 @@ type
     PanelManager: TPanel;
     PanelManagerViewProjects: TPanel;
     PanelManagerViewProjHeader: TPanel;
-    DBGridVAP: TDBGrid;
-    LblManagerViewSpecificEmployees: TLabel;
-    ListBox1: TListBox;
     ScrollBoxManagerAssessEmployees: TScrollBox;
     PanelManagerAssessEmployeeHeader: TPanel;
     Label1: TLabel;
-    DBGrid2: TDBGrid;
-    ScrollBox2: TScrollBox;
+    DBGridAE: TDBGrid;
+    ScrollBoxAE: TScrollBox;
+    LblManagerDashboard: TLabel;
+    EditManagerIDAboutMe: TEdit;
+    LblManagerIDAM: TLabel;
+    PanelDBGridVAP: TPanel;
+    DBGridVAP: TDBGrid;
+    PanelViewSpecificEmp: TPanel;
+    LblManagerViewSpecificEmployees: TLabel;
+    StringGridViewSpecificEmp: TStringGrid;
+    BtnSubmitAssess: TButton;
     procedure BtnManagerAboutMeClick(Sender: TObject);
     procedure BtnManagerViewProjClick(Sender: TObject);
     procedure BtnManagerAssessEmpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure DBGridVAPCellClick(Column: TColumn);
+    procedure DBGridAECellClick(Column: TColumn);
+    procedure BtnSubmitAssessClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -76,12 +84,174 @@ begin
   PanelManagerAboutMe.SendToBack;
 end;
 
+//------------------------------------------------------------------------------
+
+procedure TManagerForm.BtnSubmitAssessClick(Sender: TObject);
+var
+  AssessmentID, ProjectID, EmployeeID: Integer;
+  i, TotalRating, RatingCount: Integer;
+  spinRating: TSpinEdit;
+  AvgRating: Double;
+  LastAssessmentDate: TDateTime;
+begin
+  // Step 1: Get Employee ID and Project ID correctly
+  EmployeeID := DBGridAE.DataSource.DataSet.FieldByName('user_id').AsInteger;
+  ProjectID := DBGridAE.DataSource.DataSet.FieldByName('project_id').AsInteger;
+
+  // Step 2: Check if this employee was assessed within the last 6 months
+  with DataModule1.qryManagers do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'SELECT MAX(assessment_date) AS last_date ' +
+      'FROM assessments ' +
+      'WHERE employee_id = ' + IntToStr(EmployeeID) +
+      ' AND project_id = ' + IntToStr(ProjectID) +
+      ' AND manager_id = ' + IntToStr(DataModule1.LoggedInUserID);
+    Open;
+
+    if not FieldByName('last_date').IsNull then
+    begin
+      LastAssessmentDate := FieldByName('last_date').AsDateTime;
+      // If last assessment was within the past 6 months, block reassessment
+      if (Now - LastAssessmentDate) < (6 * 30) then
+      begin
+        ShowMessage('This employee has already been assessed within the last 6 months.');
+        Exit;
+      end;
+    end;
+  end;
+
+  // Step 3: Calculate the average rating
+  TotalRating := 0;
+  RatingCount := 0;
+
+  for i := 0 to ScrollBoxAE.ControlCount - 1 do
+  begin
+    if ScrollBoxAE.Controls[i] is TSpinEdit then
+    begin
+      spinRating := TSpinEdit(ScrollBoxAE.Controls[i]);
+      TotalRating := TotalRating + spinRating.Value;
+      Inc(RatingCount);
+    end;
+  end;
+
+  if RatingCount > 0 then
+    AvgRating := TotalRating / RatingCount
+  else
+    AvgRating := 0;
+
+  // Step 4: Insert into assessments table
+  with DataModule1.qryDeleteAndUpdate do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text :=
+      'INSERT INTO assessments (project_id, employee_id, manager_id, overall_rating) VALUES (' +
+      IntToStr(ProjectID) + ', ' +
+      IntToStr(EmployeeID) + ', ' +
+      IntToStr(DataModule1.LoggedInUserID) + ', ' +
+      FloatToStr(AvgRating) + ')';
+    ExecSQL;
+  end;
+
+  // Step 5: Get the last inserted assessment_id
+  with DataModule1.qryManagers do
+  begin
+    Close;
+    SQL.Clear;
+    SQL.Text := 'SELECT LAST_INSERT_ID() AS new_id';
+    Open;
+    AssessmentID := FieldByName('new_id').AsInteger;
+  end;
+
+  // Step 6: Insert each metric rating
+  for i := 0 to ScrollBoxAE.ControlCount - 1 do
+  begin
+    if ScrollBoxAE.Controls[i] is TSpinEdit then
+    begin
+      spinRating := TSpinEdit(ScrollBoxAE.Controls[i]);
+
+      with DataModule1.qryEmployees do
+      begin
+        Close;
+        SQL.Clear;
+        SQL.Text :=
+          'INSERT INTO assessment_metrics (assessment_id, metric_catalog_id, rating) VALUES (' +
+          IntToStr(AssessmentID) + ', ' +
+          IntToStr(spinRating.Tag) + ', ' +
+          IntToStr(spinRating.Value) + ')';
+        ExecSQL;
+      end;
+    end;
+  end;
+
+  // Step 7: Success message
+  ShowMessage('Assessment submitted successfully with an average rating of ' +
+    FloatToStrF(AvgRating, ffFixed, 4, 2));
+end;
+
+
+//------------------------------------------------------------------------------
+
+// ON DBGRID CELLCLICK LOAD CONTENTS IN LISTBOX:
+procedure TManagerForm.DBGridAECellClick(Column: TColumn);
+var
+  SubroleName: string;
+  i, YPos: Integer;
+  lblMetric: TLabel;
+  spinRating: TSpinEdit;
+begin
+  // Clear previous metrics
+  ScrollBoxAE.DestroyComponents;
+
+  // Get selected subrole
+  SubroleName := DBGridAE.DataSource.DataSet.FieldByName('subrole_name').AsString;
+
+  with DataModule1.qryDeleteAndUpdate do
+  begin
+    Close;
+    SQL.Text :=
+      'SELECT mc.metric_catalog_id, mc.metric_name ' +
+      'FROM subrole_metrics sm ' +
+      'JOIN subrole s ON sm.subrole_id = s.subrole_id ' +
+      'JOIN metric_catalog mc ON sm.metric_catalog_id = mc.metric_catalog_id ' +
+      'WHERE s.subrole_roles = ' + QuotedStr(SubroleName);
+    Open;
+  end;
+
+  // Dynamically create labels + spin edits
+  YPos := 10;
+  for i := 0 to DataModule1.qryDeleteAndUpdate.RecordCount - 1 do
+  begin
+    lblMetric := TLabel.Create(ScrollBoxAE);
+    lblMetric.Parent := ScrollBoxAE;
+    lblMetric.Caption := DataModule1.qryDeleteAndUpdate.FieldByName('metric_name').AsString;
+    lblMetric.Left := 10;
+    lblMetric.Top := YPos;
+    lblMetric.Tag := DataModule1.qryDeleteAndUpdate.FieldByName('metric_catalog_id').AsInteger;
+
+    spinRating := TSpinEdit.Create(ScrollBoxAE);
+    spinRating.Parent := ScrollBoxAE;
+    spinRating.MinValue := 1;
+    spinRating.MaxValue := 5;
+    spinRating.Value := 3;
+    spinRating.Left := 200;
+    spinRating.Top := YPos - 3;
+    spinRating.Tag := lblMetric.Tag;
+
+    YPos := YPos + 35;
+    DataModule1.qryDeleteAndUpdate.Next;
+  end;
+end;
+
 procedure TManagerForm.DBGridVAPCellClick(Column: TColumn);
 var
-  SelectedProjectID: Integer;
+  SelectedProjectID, RowIndex: Integer;
 begin
   // Get selected project_id from the current row in the grid
-  SelectedProjectID := DataModule1.qryManagerViewAllProj.FieldByName('project_id').AsInteger;
+  SelectedProjectID := DataModule1.qryDBGridVAP.FieldByName('project_id').AsInteger;
 
   // Populate ListBox1 with employees for this project
   with DataModule1.qryEmployees do
@@ -89,26 +259,41 @@ begin
     Close;
     SQL.Clear;
     SQL.Text :=
-      'SELECT u.name AS employee_name ' +
+      'SELECT u.name AS employee_name, u.email AS employee_email, s.subrole_roles AS employee_subrole ' +
       'FROM project_assignments pa ' +
       'JOIN users u ON pa.employee_id = u.user_id ' +
+      'JOIN subrole s ON s.subrole_id = u.subrole_id ' +
       'WHERE pa.project_id = ' + QuotedStr(IntToStr(SelectedProjectID)) +
       ' AND pa.manager_id = ' + QuotedStr(IntToStr(DataModule1.LoggedInUserID));
     Open;
 
-    // Fill the ListBox
-    ListBox1.Clear;
+        // Prepare the grid
+    StringGridViewSpecificEmp.RowCount := RecordCount + 1;
+    StringGridViewSpecificEmp.ColCount := 3;
+    StringGridViewSpecificEmp.FixedRows := 1;
+    StringGridViewSpecificEmp.Cells[0, 0] := 'Teammates';
+    StringGridViewSpecificEmp.Cells[1, 0] := 'Email';
+    StringGridViewSpecificEmp.ColWidths[1] := 150;
+    StringGridViewSpecificEmp.Cells[2, 0] := 'Subrole';
+
+    RowIndex := 1;
     while not Eof do
     begin
-      ListBox1.Items.Add(FieldByName('employee_name').AsString);
+      StringGridViewSpecificEmp.Cells[0, RowIndex] := FieldByName('employee_name').AsString;
+      StringGridViewSpecificEmp.Cells[1, RowIndex] := FieldByName('employee_email').AsString;
+      StringGridViewSpecificEmp.Cells[2, RowIndex] := FieldByName('employee_subrole').AsString;
+      Inc(RowIndex);
       Next;
     end;
   end;
 end;
 
+//------------------------------------------------------------------------------
+
+// POPULATE THE DBGRID (qryDBGridVAP):
 procedure TManagerForm.FormShow(Sender: TObject);
 begin
-  with DataModule1.qryManagerViewAllProj do
+  with DataModule1.qryDBGridVAP do
   begin
     Close;
     SQL.Text :=
@@ -121,6 +306,19 @@ begin
       'LEFT JOIN subrole s ON e.subrole_id = s.subrole_id ' +
       'WHERE pa.manager_id = ' + QuotedStr(IntToStr(DataModule1.LoggedInUserID));
 
+    Open;
+  end;
+
+  with DataModule1.qryDBGridAE do
+  begin
+    Close;
+    SQL.Text :=
+      'SELECT e.user_id, e.name AS employee_name, s.subrole_roles AS subrole_name, p.project_id AS project_id , p.title AS project_title ' +
+      'FROM project_assignments pa ' +
+      'JOIN users e ON pa.employee_id = e.user_id ' +
+      'JOIN subrole s ON e.subrole_id = s.subrole_id ' +
+      'JOIN projects p ON pa.project_id = p.project_id ' +
+      'WHERE pa.manager_id = ' + QuotedStr(IntToStr(DataModule1.LoggedInUserID));
     Open;
   end;
 end;

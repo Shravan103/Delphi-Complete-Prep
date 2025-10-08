@@ -2,7 +2,7 @@ object ManagerForm: TManagerForm
   Left = 0
   Top = 0
   Caption = 'MANAGER'
-  ClientHeight = 705
+  ClientHeight = 713
   ClientWidth = 1370
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -41,59 +41,18 @@ object ManagerForm: TManagerForm
         Font.Style = [fsBold]
         ParentFont = False
       end
-    end
-    object PanelManagerSidebar: TPanel
-      Left = 1
-      Top = 57
-      Width = 217
-      Height = 647
-      Align = alLeft
-      BorderStyle = bsSingle
-      TabOrder = 1
-      object BtnManagerViewProj: TButton
-        Left = 2
-        Top = 2
-        Width = 208
-        Height = 97
-        Caption = 'View All Projects'
+      object LblManagerDashboard: TLabel
+        Left = 27
+        Top = 9
+        Width = 253
+        Height = 38
+        Caption = 'Manager Dashboard'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
-        Font.Height = -16
+        Font.Height = -32
         Font.Name = 'Roboto Cn'
         Font.Style = [fsBold]
         ParentFont = False
-        TabOrder = 0
-        OnClick = BtnManagerViewProjClick
-      end
-      object BtnManagerAssessEmp: TButton
-        Left = 2
-        Top = 100
-        Width = 208
-        Height = 97
-        Caption = 'Assess Employees'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 1
-        OnClick = BtnManagerAssessEmpClick
-      end
-      object BtnManagerAboutMe: TButton
-        Left = 2
-        Top = 542
-        Width = 208
-        Height = 97
-        Caption = 'About Me'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-        TabOrder = 2
-        OnClick = BtnManagerAboutMeClick
       end
     end
     object PanelManagerAboutMe: TPanel
@@ -11091,7 +11050,7 @@ object ManagerForm: TManagerForm
         Transparent = True
       end
       object LblNameManagerAM: TLabel
-        Left = 454
+        Left = 448
         Top = 287
         Width = 33
         Height = 15
@@ -11104,7 +11063,7 @@ object ManagerForm: TManagerForm
         ParentFont = False
       end
       object LblEmailManagerAM: TLabel
-        Left = 454
+        Left = 448
         Top = 359
         Width = 31
         Height = 15
@@ -11117,7 +11076,7 @@ object ManagerForm: TManagerForm
         ParentFont = False
       end
       object LblRoleManagerAM: TLabel
-        Left = 454
+        Left = 448
         Top = 428
         Width = 25
         Height = 15
@@ -11130,11 +11089,25 @@ object ManagerForm: TManagerForm
         ParentFont = False
       end
       object LblSubroleManagerAM: TLabel
-        Left = 453
+        Left = 447
         Top = 496
         Width = 41
         Height = 15
         Caption = 'Subrole:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object LblManagerIDAM: TLabel
+        Left = 525
+        Top = 219
+        Width = 13
+        Height = 15
+        Alignment = taCenter
+        Caption = 'ID:'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -11149,7 +11122,7 @@ object ManagerForm: TManagerForm
         Height = 41
         Align = alTop
         Caption = 'About Me'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11160,8 +11133,8 @@ object ManagerForm: TManagerForm
         TabOrder = 0
       end
       object EditNameManagerAM: TEdit
-        Left = 454
-        Top = 304
+        Left = 448
+        Top = 308
         Width = 253
         Height = 24
         Enabled = False
@@ -11175,7 +11148,7 @@ object ManagerForm: TManagerForm
         TabOrder = 1
       end
       object EditEmailManagerAM: TEdit
-        Left = 454
+        Left = 448
         Top = 376
         Width = 253
         Height = 24
@@ -11190,7 +11163,7 @@ object ManagerForm: TManagerForm
         TabOrder = 2
       end
       object EditRoleManagerAM: TEdit
-        Left = 454
+        Left = 448
         Top = 445
         Width = 253
         Height = 24
@@ -11205,7 +11178,7 @@ object ManagerForm: TManagerForm
         TabOrder = 3
       end
       object EditSubroleManagerAM: TEdit
-        Left = 454
+        Left = 448
         Top = 515
         Width = 253
         Height = 24
@@ -11219,6 +11192,78 @@ object ManagerForm: TManagerForm
         ReadOnly = True
         TabOrder = 4
       end
+      object EditManagerIDAboutMe: TEdit
+        Left = 544
+        Top = 215
+        Width = 49
+        Height = 24
+        Alignment = taCenter
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 5
+      end
+    end
+    object PanelManagerSidebar: TPanel
+      Left = 1
+      Top = 57
+      Width = 217
+      Height = 647
+      Align = alLeft
+      BorderStyle = bsSingle
+      Color = clScrollBar
+      ParentBackground = False
+      TabOrder = 1
+      object BtnManagerViewProj: TButton
+        Left = 5
+        Top = 6
+        Width = 202
+        Height = 97
+        Caption = 'View All Projects'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+        OnClick = BtnManagerViewProjClick
+      end
+      object BtnManagerAssessEmp: TButton
+        Left = 5
+        Top = 108
+        Width = 202
+        Height = 101
+        Caption = 'Assess Employees'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        OnClick = BtnManagerAssessEmpClick
+      end
+      object BtnManagerAboutMe: TButton
+        Left = 5
+        Top = 539
+        Width = 202
+        Height = 97
+        Caption = 'About Me'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Roboto Cn'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 2
+        OnClick = BtnManagerAboutMeClick
+      end
     end
     object PanelManagerViewProjects: TPanel
       Left = 224
@@ -11227,19 +11272,6 @@ object ManagerForm: TManagerForm
       Height = 635
       BorderStyle = bsSingle
       TabOrder = 3
-      object LblManagerViewSpecificEmployees: TLabel
-        Left = 453
-        Top = 403
-        Width = 239
-        Height = 19
-        Caption = 'View Employees for Specific Projects:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Roboto Cn'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object PanelManagerViewProjHeader: TPanel
         Left = 1
         Top = 1
@@ -11247,7 +11279,7 @@ object ManagerForm: TManagerForm
         Height = 41
         Align = alTop
         Caption = 'View All Projects'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11257,64 +11289,106 @@ object ManagerForm: TManagerForm
         ParentFont = False
         TabOrder = 0
       end
-      object DBGridVAP: TDBGrid
-        Left = 208
-        Top = 115
-        Width = 705
-        Height = 213
-        DataSource = DataModule1.dsManagerViewAllProj
+      object PanelDBGridVAP: TPanel
+        Left = 24
+        Top = 72
+        Width = 1081
+        Height = 281
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -11
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        OnCellClick = DBGridVAPCellClick
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'project_id'
-            Width = 70
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'project_name'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'employee_name'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'employee_email'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'employee_role'
-            Width = 100
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'employee_subrole'
-            Width = 100
-            Visible = True
-          end>
+        object DBGridVAP: TDBGrid
+          Left = 192
+          Top = 33
+          Width = 705
+          Height = 213
+          DataSource = DataModule1.dsDBGridVAP
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -11
+          TitleFont.Name = 'Tahoma'
+          TitleFont.Style = []
+          OnCellClick = DBGridVAPCellClick
+          Columns = <
+            item
+              Expanded = False
+              FieldName = 'project_id'
+              Width = 70
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'project_name'
+              Width = 100
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_name'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_email'
+              Width = 150
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_role'
+              Width = 120
+              Visible = True
+            end
+            item
+              Expanded = False
+              FieldName = 'employee_subrole'
+              Width = 120
+              Visible = True
+            end>
+        end
       end
-      object ListBox1: TListBox
-        Left = 352
-        Top = 428
-        Width = 433
-        Height = 153
-        ItemHeight = 13
+      object PanelViewSpecificEmp: TPanel
+        Left = 24
+        Top = 359
+        Width = 1081
+        Height = 250
+        Color = clScrollBar
+        ParentBackground = False
         TabOrder = 2
+        object LblManagerViewSpecificEmployees: TLabel
+          Left = 442
+          Top = 34
+          Width = 239
+          Height = 19
+          Caption = 'View Employees for Specific Projects:'
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Roboto Cn'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object StringGridViewSpecificEmp: TStringGrid
+          Left = 384
+          Top = 59
+          Width = 329
+          Height = 161
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+        end
       end
     end
     object ScrollBoxManagerAssessEmployees: TScrollBox
@@ -11343,7 +11417,7 @@ object ManagerForm: TManagerForm
         Height = 41
         Align = alTop
         Caption = 'Assess Employee'
-        Color = clLime
+        Color = clGradientActiveCaption
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -21
@@ -11353,27 +11427,63 @@ object ManagerForm: TManagerForm
         ParentFont = False
         TabOrder = 0
       end
-      object DBGrid2: TDBGrid
-        Left = 184
-        Top = 94
-        Width = 737
+      object DBGridAE: TDBGrid
+        Left = 296
+        Top = 89
+        Width = 537
         Height = 170
+        DataSource = DataModule1.dsDBGridAE
         TabOrder = 1
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -11
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
+        OnCellClick = DBGridAECellClick
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'user_id'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'employee_name'
+            Width = 140
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'subrole_name'
+            Width = 140
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'project_title'
+            Width = 140
+            Visible = True
+          end>
       end
-      object ScrollBox2: TScrollBox
+      object ScrollBoxAE: TScrollBox
         Left = 184
-        Top = 304
-        Width = 737
-        Height = 313
+        Top = 338
+        Width = 761
+        Height = 279
         BorderStyle = bsNone
-        Color = clSkyBlue
+        Color = clMoneyGreen
         ParentColor = False
         TabOrder = 2
+      end
+      object BtnSubmitAssess: TButton
+        Left = 518
+        Top = 277
+        Width = 75
+        Height = 25
+        Caption = 'ASSESS'
+        TabOrder = 3
+        OnClick = BtnSubmitAssessClick
       end
     end
   end
